@@ -1,6 +1,12 @@
 import numpy as np
 from mimo.mimo import BlockDistributer
 
+
+
+
+
+
+
 class TapUpdater():
     def save_timedomain_taps(self, H, lb, nmodes, ovsmpl):
         for i_input in range(nmodes):

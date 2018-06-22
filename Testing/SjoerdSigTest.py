@@ -10,8 +10,10 @@ N = 20 *10**4
 capture = sio.loadmat('QSM_3.10E-6_51taps.mat', squeeze_me=True)
     
 sequence = capture['Sequence'][()].astype(np.complex128)
-sequence[0] = np.roll(sequence[0],24600)
-sequence[1] = np.roll(sequence[1],1600)
+sequence = np.roll(sequence,24600,axis =1)
+sequence[1] = sequence[1].imag + 1j*sequence[1].real
+#sequence[1] = sequence[1].real -1j*sequence[1].imag
+#sequence[1] = np.roll(sequence[1],1600)
 
 
 
@@ -69,7 +71,7 @@ errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,-i
 #sig_martin = sig.copy()[:,:N + training_loops *  ntraining_syms]
  
 tap_updater = mimo.FrequencyDomainTapUpdater(mu_martin,block_distr)
-phase_recoverer = mimo.BlindPhaseSearcher(block_distr,30,constellation)
+phase_recoverer = mimo.BlindPhaseSearcher(block_distr,30,constellation,6)
 
 sig_martin =  mimo.equalize_blockwize(block_distr,tap_updater,errorcalc)
 #sig_martin = mimo.equalize_blockwize_with_phaserec(block_distr,tap_updater,errorcalc,phase_recoverer)
@@ -88,6 +90,6 @@ for i_mode in range(nmodes):
     row_figs = []
     row_figs.append(bmp.ConvergencePlotBasic(err_martin[i_mode],name))
     row_figs.append(bmp.ConstellationPlot(bit_sigs[i_mode],N,name))
-    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode],N,name))
+    row_figs.append(bmp.TapsPlot(np.append(taps_martin[:,i_mode],N,name))
     figs.append(row_figs)
 bmp.plot_interactive_mimo(figs,t_conv,t_conv+10000)

@@ -89,4 +89,39 @@ class BlockDistributer():
         self.sig_compensated = np.zeros(nmodes*nsyms,dtype=np.complex128).reshape(nmodes,nsyms)
         self.nblocks = int(nsyms/lb)
 
-      
+class WideBlockDistributer(BlockDistributer):
+       
+    def _separate_oversampled_samples(self,sig):
+        nmodes = sig.shape[0]
+        nsamps = sig.shape[1]
+        ovsmpl = self.ovsmpl
+        dims = 2
+        shp = (nmodes,ovsmpl,dims,int(nsamps/ovsmpl))
+        sig_separated = np.zeros(shp,dtype=np.complex128)
+        for i_ovsmpl in range(ovsmpl):
+            for i_input in range(nmodes):
+                sig_separated[i_input,i_ovsmpl,0] = sig[i_input,range(i_ovsmpl,nsamps,ovsmpl)]
+                sig_separated[i_input,i_ovsmpl,1] = np.conj(sig_separated[i_input,i_ovsmpl,0])
+        return sig_separated
+
+    def reselect_blocks(self,i_block):
+        nmodes= self.nmodes
+        ovsmpl = self.ovsmpl
+        lb = self.lb
+        range_block = self._get_block_range(i_block,lb)
+        range_double_block = self._get_double_block_range(i_block,lb)
+        self.double_block = self.sig_separated[:,:,:,range_double_block]
+        self.block = self.sig_separated[:,:,:,range_block]
+        double_block_fd = np.zeros_like(self.double_block)
+        for i_input in range(double_block_fd.shape[0]):
+            for i_ovsmpl in range(double_block_fd.shape[1]):
+                for i_wide in [0,1]:
+                    double_block_fd[i_input,i_ovsmpl,i_wide] = np.fft.fft(self.double_block[i_input,i_ovsmpl,i_wide])
+        self.double_block_fd = double_block_fd
+        self.range_block = range_block
+        self.i_block = i_block           
+    
+#Todo overwrite shifted FD
+           
+    def __init__(self,sig,lb,ovsmpl):
+        super().__init__(sig,lb,ovsmpl)

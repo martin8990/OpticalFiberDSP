@@ -31,9 +31,8 @@ class BlindPhaseSearcher():
                
     def __denoise(self, nearest_dist_per_angle):
         csum = np.cumsum(nearest_dist_per_angle, axis=0)
-        print(csum.shape)
         nearest_dist_per_angle_denoised = csum[2*self.lbp:]-csum[:-2*self.lbp] 
-        print(nearest_dist_per_angle_denoised.shape)
+     
         return nearest_dist_per_angle_denoised
         
     def __get_angle_id_with_nearest_distance(self,nearest_dist_per_angle_denoised):
@@ -88,7 +87,7 @@ class BlindPhaseSearcher():
             block[i_mode] = block_appended[self.lbp:-self.lbp]
             decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended)
             phases_mode = self.__select_angles(self.angles,decisions)
-#            phases_mode = self.remove_cycle_slips(i_mode, lb, phases_mode)
+            phases_mode = self.remove_cycle_slips(i_mode, lb, phases_mode)
             phases.append(phases_mode)
             self.phase_collection[i_mode].extend(phases_mode)
                    

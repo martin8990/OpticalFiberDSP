@@ -9,9 +9,10 @@
 # lb : blocklength
 
 import numpy as np
-from mimo.blockdistributer import BlockDistributer
+from mimo.blockdistributer import BlockDistributer, WideBlockDistributer
 from mimo.error_calculator import *
 from mimo.tap_updater import *
+from mimo.tap_updater_wide import * 
 from mimo.compensator import *
 from mimo.phaserecoverer import BlindPhaseSearcher
 
@@ -26,6 +27,18 @@ def equalize_blockwize(block_distr : BlockDistributer,tap_updater : TapUpdater,e
         tap_updater.update_taps(block_distr)
     return block_distr.sig_compensated
 
+
+def equalize_blockwize_widely(block_distr : BlockDistributer,tap_updater : TapUpdater,error_calculator : MimoErrorCalculator):
+
+    nblocks = block_distr.nblocks
+    for i_block in range(1,nblocks):
+        block_distr.reselect_blocks(i_block)
+        compensate_widely(block_distr,tap_updater.H)
+        error_calculator.start_error_calculation(block_distr)
+        tap_updater.update_taps(block_distr)
+    return block_distr.sig_compensated
+
+
 def equalize_blockwize_with_phaserec(block_distr : BlockDistributer,tap_updater : TapUpdater,error_calculator : MimoErrorCalculator, phaserecoverer : BlindPhaseSearcher):
 
     nblocks = block_distr.nblocks
@@ -36,6 +49,7 @@ def equalize_blockwize_with_phaserec(block_distr : BlockDistributer,tap_updater 
         error_calculator.start_error_calculation(block_distr)
         tap_updater.update_taps(block_distr)
     return block_distr.sig_compensated
+
     
 
     #

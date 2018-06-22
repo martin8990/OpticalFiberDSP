@@ -3,7 +3,6 @@ import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 import mimo.mimo as mimo
-import mimo.phaserecovery as phaserec
 import matplotlib.pyplot as plt
 from PlotFunctions.MPLMimoPlots import *
 #from PlotFunctions.InteractiveMimoPlot import MimoPlotRequest, plot_interactive_mimo
@@ -16,10 +15,10 @@ from qampy.core.filter import *
 
 ## Params
         
-N = 15 * 10**4
+N = 5 * 10**4
 
 SNR = 20
-lb = 256 
+lb = 64 
 mu_martin = 1e-3
 
 phase_noise = 100e3 
@@ -44,7 +43,7 @@ if ovsmpl > 1:
     #sig[0] = rrcos_pulseshaping(sig[0], 1, 0.5, 1, taps=1001)
 
 sig = impairments.change_snr(sig,SNR)
-sig = impairments.apply_phase_noise(sig,phase_noise)
+#sig = impairments.apply_phase_noise(sig,phase_noise)
 constellation,answers = eval.derive_constellation_and_answers(sequence)
 
 #matrix = imp.build_mixing_matrix(nmodes,0.4,0.3)
@@ -53,25 +52,24 @@ constellation,answers = eval.derive_constellation_and_answers(sequence)
 
 #Equalisation
 
-block_distr = mimo.BlockDistributer(sig,lb,ovsmpl)
+block_distr = mimo.WideBlockDistributer(sig,lb,ovsmpl)
 
 #errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,int(-lb/2))
 
 #sig = errorcalc.AddTrainingLoops(sig,ovsmpl,training_loops)
 
 errorcalc = mimo.CMAErrorCalculator(block_distr)
-tap_updater = mimo.FrequencyDomainTapUpdater(mu_martin,block_distr)
+tap_updater = mimo.WideFrequencyDomainTapUpdater(mu_martin,block_distr)
 phase_recoverer = mimo.BlindPhaseSearcher(block_distr,20,constellation,lbp)
 
 sig_martin = sequence.copy()
-#sig_martin[:,:] =  mimo.equalize_blockwize(block_distr,tap_updater,errorcalc)
-sig_martin[:,:] = mimo.equalize_blockwize_with_phaserec(block_distr,tap_updater,errorcalc,phase_recoverer)
-#offset = np.argmax(np.correlate(sequence[0],sig_martin[0],mode = 'same'))
+sig_martin[:,:] =  mimo.equalize_blockwize_widely(block_distr,tap_updater,errorcalc)
+#sig_martin[:,:] = mimo.equalize_blockwize_with_phaserec(block_distr,tap_updater,errorcalc,phase_recoverer)
 #print(offset - N/2)
 
 taps_martin = tap_updater.retrieve_timedomain_taps()
 err_martin = errorcalc.retrieve_error()
-bit_sigs = eval.seperate_per_bit(constellation,answers,sig_martin,lb,lbp)
+bit_sigs = eval.seperate_per_bit(constellation,answers,sig_martin,lb,0)
 
 #plot_constellation_bitsep(bit_sigs,constellation,"Martin",False)
 #plt.show()
@@ -108,6 +106,6 @@ for i_mode in range(nmodes):
     row_figs = []
     row_figs.append(get_convergence_plot(err_martin[i_mode],phase[i_mode],slips_up[i_mode],slips_down[i_mode],name))
     row_figs.append(bmp.ConstellationPlot(bit_sigs[i_mode],N,name))
-    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode],N,name))
+    row_figs.append(bmp.TapsPlot(np.append(taps_martin[:,i_mode,0],taps_martin[:,i_mode,1],axis = 0),N,name))
     figs.append(row_figs)
 bmp.plot_interactive_mimo(figs,int(sig.shape[1]/4),int(sig.shape[1]/4)+10000)

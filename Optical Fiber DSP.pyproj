@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{58a347be-2db0-4756-b8e0-a8f1353af3d6}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>Testing\HybridTest.py</StartupFile>
+    <StartupFile>Testing\WideTest.py</StartupFile>
     <SearchPath>pyqt_mimo</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -36,8 +36,7 @@
     <Compile Include="EvaluationFunctions\MimoEvaluation.py" />
     <Compile Include="EvaluationFunctions\__init__.py" />
     <Compile Include="Impairments\Impairments.py" />
-    <Compile Include="mimo\asdasd.py" />
-    <Compile Include="mimo\blockdistributer - Copy.py" />
+    <Compile Include="Impairments\__init__.py" />
     <Compile Include="mimo\blockdistributer.py" />
     <Compile Include="mimo\compensator.py" />
     <Compile Include="mimo\error_calculator.py" />
@@ -53,6 +52,7 @@
     <Compile Include="mimo\mimo.py" />
     <Compile Include="mimo\phaserecoverer.py" />
     <Compile Include="mimo\phaserecovery.py" />
+    <Compile Include="mimo\tap_updater_wide.py" />
     <Compile Include="mimo\tap_updater.py" />
     <Compile Include="mimo\Tests\mimoTests.py" />
     <Compile Include="mimo\__init__.py" />
@@ -69,10 +69,10 @@
     <Compile Include="pyqt_mimo\mimofigure.py" />
     <Compile Include="pyqt_mimo\mimoplot.py" />
     <Compile Include="pyqt_mimo\tapsplot.py" />
-    <Compile Include="Testing\8QAMTest.py" />
-    <Compile Include="Testing\BlockLengthTest.py" />
+    <Compile Include="pyqt_mimo\__init__.py" />
     <Compile Include="Testing\CrossCor.py" />
     <Compile Include="Testing\FourierTransform\FourierTransform.py" />
+    <Compile Include="Testing\WideTest.py" />
     <Compile Include="Testing\HybridTest.py" />
     <Compile Include="Testing\Legacy\AutoTest LMS.py" />
     <Compile Include="Testing\Legacy\AutoTest.py" />
@@ -80,8 +80,6 @@
     <Compile Include="Testing\Legacy\CompareData.py" />
     <Compile Include="Testing\Legacy\CSVAutoTest.py" />
     <Compile Include="Testing\Legacy\DelayAfterTestPyQtGraph.py" />
-    <Compile Include="Testing\LMS_Debug.py" />
-    <Compile Include="Testing\LRDTest.py" />
     <Compile Include="Testing\multi_qam_test.py" />
     <Compile Include="Testing\ovsmpldTaps.py" />
     <Compile Include="Testing\PandaTest\AutoTest.py" />
@@ -93,7 +91,6 @@
     <Compile Include="Testing\SignalLoader.py" />
     <Compile Include="Testing\SjoerdSigTest.py" />
     <Compile Include="Testing\SjoerdSigTestBF.py" />
-    <Compile Include="Testing\untitled0.py" />
     <Compile Include="Testing\__init__.py" />
   </ItemGroup>
   <ItemGroup>
