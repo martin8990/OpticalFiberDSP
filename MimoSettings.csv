@@ -1,0 +1,3 @@
+﻿mu,lb,errorcalc,n_training_syms
+3.00E-04,80,cma,0
+3.00E-04,80,lms,10000

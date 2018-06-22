@@ -1,0 +1,13 @@
+N = 1 * 10**5
+PMD = 1e-9
+SNR = 15
+mu_Martin = 10e-4
+mu_Qampy = 5e-4
+
+lb = 61
+BER_Martin =  [0.        0.0007449]
+BER_Qampy =  [6.00366223e-05 9.95607320e-04]
+final_error_Martin :  0.2211183684830147
+final_error_QamPy :  0.2668846891590418
+Convergence_Martin :  30088
+Convergence_QamPy :  24971

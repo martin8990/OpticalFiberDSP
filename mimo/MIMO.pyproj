@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9c83735b-dcd6-48d3-83b8-c73887ddfc87}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>All_IN_MIMO.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>Global|ContinuumAnalytics|Anaconda36-64</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="21LBDyn.png" />
+    <Content Include="401LBDyn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="All_IN_MIMO.py" />
+    <Compile Include="CPUTimePlot.py" />
+    <Compile Include="Disturbance.py" />
+    <Compile Include="DynamicDistortions.py" />
+    <Compile Include="GpuSpeedupPlot.py" />
+    <Compile Include="Main.py" />
+    <Compile Include="MIMO.py" />
+    <Compile Include="MIMOKernels.py" />
+    <Compile Include="MIMO_CPU.py" />
+    <Compile Include="SpeedComparisonLine.py" />
+    <Compile Include="SpeedComparisonTest.py" />
+    <Compile Include="SpeedLinePlot.py" />
+    <Compile Include="SpeedTest.py" />
+    <Compile Include="SpeedupPlot.py" />
+    <Compile Include="Transmitter.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

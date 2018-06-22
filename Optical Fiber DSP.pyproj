@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{58a347be-2db0-4756-b8e0-a8f1353af3d6}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile />
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>Global|ContinuumAnalytics|Anaconda36-64</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="2OversampledTaps.txt" />
+    <Content Include="mimo\Legacy\21LBDyn.png" />
+    <Content Include="mimo\Legacy\401LBDyn.png" />
+    <Content Include="Results\Heatmap.png" />
+    <Content Include="Results\LB_Comparison\Hihger.png" />
+    <Content Include="Results\LB_Comparison\Lower.png" />
+    <Content Include="Results\LB_Comparison\Settings.txt" />
+    <Content Include="Results\Long.png" />
+    <Content Include="Results\NanoSecondPMD\NanosecondPMD.png" />
+    <Content Include="Results\NanoSecondPMD\Settings.txt" />
+    <Content Include="Results\Settings.txt" />
+    <Content Include="sig.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EvaluationFunctions\MimoEvaluation.py" />
+    <Compile Include="EvaluationFunctions\__init__.py" />
+    <Compile Include="Impairments\Impairments.py" />
+    <Compile Include="mimo\asdasd.py" />
+    <Compile Include="mimo\blockdistributer.py" />
+    <Compile Include="mimo\compensator.py" />
+    <Compile Include="mimo\error_calculator.py" />
+    <Compile Include="mimo\Legacy\All_IN_MIMO.py" />
+    <Compile Include="mimo\Legacy\CPUTimePlot.py" />
+    <Compile Include="mimo\Legacy\Disturbance.py" />
+    <Compile Include="mimo\Legacy\DynamicDistortions.py" />
+    <Compile Include="mimo\Legacy\GpuSpeedupPlot.py" />
+    <Compile Include="mimo\Legacy\mimo - Copy.py" />
+    <Compile Include="mimo\Legacy\MIMO.py" />
+    <Compile Include="mimo\Legacy\MIMOKernels.py" />
+    <Compile Include="mimo\Legacy\MIMO_CPU - Copy.py" />
+    <Compile Include="mimo\mimo.py" />
+    <Compile Include="mimo\phaserecoverer.py" />
+    <Compile Include="mimo\phaserecovery.py" />
+    <Compile Include="mimo\tap_updater.py" />
+    <Compile Include="mimo\Tests\mimoTests.py" />
+    <Compile Include="mimo\__init__.py" />
+    <Compile Include="PlotFunctions\HeatMap.py" />
+    <Compile Include="PlotFunctions\Legacy\pyqt_bitmimoplot.py" />
+    <Compile Include="PlotFunctions\MPLMimoPlots.py" />
+    <Compile Include="PlotFunctions\PyQtConvergencePlot.py" />
+    <Compile Include="PlotFunctions\PyQtHeatmap - Copy.py" />
+    <Compile Include="PlotFunctions\PyQtHeatmap.py" />
+    <Compile Include="PlotFunctions\pyqt_bitmimoplot.py" />
+    <Compile Include="PlotFunctions\__init__.py" />
+    <Compile Include="pyqt_mimo\constellationplot.py" />
+    <Compile Include="pyqt_mimo\convergenceplot.py" />
+    <Compile Include="pyqt_mimo\mimofigure.py" />
+    <Compile Include="pyqt_mimo\mimoplot.py" />
+    <Compile Include="pyqt_mimo\tapsplot.py" />
+    <Compile Include="Testing\8QAMTest.py" />
+    <Compile Include="Testing\BlockLengthTest.py" />
+    <Compile Include="Testing\CrossCor.py" />
+    <Compile Include="Testing\FourierTransform\FourierTransform.py" />
+    <Compile Include="Testing\HybridTest.py" />
+    <Compile Include="Testing\Legacy\AutoTest LMS.py" />
+    <Compile Include="Testing\Legacy\AutoTest.py" />
+    <Compile Include="Testing\Legacy\AutoTestResample.py" />
+    <Compile Include="Testing\Legacy\CompareData.py" />
+    <Compile Include="Testing\Legacy\CSVAutoTest.py" />
+    <Compile Include="Testing\Legacy\DelayAfterTestPyQtGraph.py" />
+    <Compile Include="Testing\LMS_Debug.py" />
+    <Compile Include="Testing\LRDTest.py" />
+    <Compile Include="Testing\multi_qam_test.py" />
+    <Compile Include="Testing\ovsmpldTaps.py" />
+    <Compile Include="Testing\PandaTest\AutoTest.py" />
+    <Compile Include="Testing\PandaTest\DirectoryCreator.py" />
+    <Compile Include="Testing\PandaTest\MimoRunner.py" />
+    <Compile Include="Testing\PandaTest\PandaManager.py" />
+    <Compile Include="Testing\PandaTest\SignalCreator.py" />
+    <Compile Include="Testing\Qampy_debug.py" />
+    <Compile Include="Testing\SignalLoader.py" />
+    <Compile Include="Testing\SjoerdSigTest.py" />
+    <Compile Include="Testing\SjoerdSigTestBF.py" />
+    <Compile Include="Testing\untitled0.py" />
+    <Compile Include="Testing\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EvaluationFunctions" />
+    <Folder Include="Impairments" />
+    <Folder Include="mimo" />
+    <Folder Include="mimo\Legacy" />
+    <Folder Include="mimo\Tests" />
+    <Folder Include="PlotFunctions" />
+    <Folder Include="PlotFunctions\Legacy" />
+    <Folder Include="pyqt_mimo" />
+    <Folder Include="Results" />
+    <Folder Include="Results\LB_Comparison" />
+    <Folder Include="Results\NanoSecondPMD" />
+    <Folder Include="Testing" />
+    <Folder Include="Testing\FourierTransform" />
+    <Folder Include="Testing\Legacy" />
+    <Folder Include="Testing\PandaTest" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+</Project>

@@ -1,0 +1,10 @@
+BER_Martin =  [1.69491525e-05 4.11567797e-01]
+BER_Martin =  [0.         0.00061864]
+BER_Martin =  [0.         0.00027966]
+BER_Martin =  [0.         0.00045763]
+from 60.000
+
+PMD = 1e-9
+SNR = 15
+mu = 10e-4
+phase_noise = 100e3 
