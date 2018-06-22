@@ -2,31 +2,39 @@ import numpy as np
 from mimo.mimo import BlockDistributer
 
 class BlindPhaseSearcher():
-    def __init__(self,block_distr : BlockDistributer,num_testangles,constellation):
+    def __init__(self,block_distr : BlockDistributer,num_testangles,constellation,len_phase_block):
         b = np.arange(num_testangles)
         self.angles = b/num_testangles * np.pi/2
         self.constellation = constellation
         self.i_block = 0
         self.num_testangles =num_testangles
+        
         nmodes = block_distr.nmodes
         nblocks = block_distr.nblocks
-        lb = block_distr.lb
+        
+        self.lbp = len_phase_block
+        self.buffer = np.ones((nmodes,len_phase_block*2),dtype = np.complex128) * constellation[0]
+
         self.phase_collection = []
         self.slips_up = []
         self.slips_down = []
+
         for i_mode in range(nmodes):
             self.phase_collection.append([])
             self.slips_up.append([])
             self.slips_down.append([])
+        
         self.prev_phases = np.ones(nmodes) * 0
         self.counter = np.zeros(nmodes)
         self.i_block = 0
         
                
-    def __denoise(self,i_mode,nearest_dist_per_angle,block_distr : BlockDistributer):
-        denoised = np.cumsum(nearest_dist_per_angle, axis=0)
-       
-        return denoised
+    def __denoise(self, nearest_dist_per_angle):
+        csum = np.cumsum(nearest_dist_per_angle, axis=0)
+        print(csum.shape)
+        nearest_dist_per_angle_denoised = csum[2*self.lbp:]-csum[:-2*self.lbp] 
+        print(nearest_dist_per_angle_denoised.shape)
+        return nearest_dist_per_angle_denoised
         
     def __get_angle_id_with_nearest_distance(self,nearest_dist_per_angle_denoised):
         return nearest_dist_per_angle_denoised.argmin(1)
@@ -39,8 +47,8 @@ class BlindPhaseSearcher():
         distances = abs(sig_rotated[:, :, np.newaxis]-constellation)**2
 
         nearest_dist_per_angle = distances.min(axis=2)
-        nearest_dist_per_angle_denoised = self.__denoise(i_mode, nearest_dist_per_angle,block_distr)
-           
+        nearest_dist_per_angle_denoised = self.__denoise(nearest_dist_per_angle)
+        
         decisions = self.__get_angle_id_with_nearest_distance(nearest_dist_per_angle_denoised)
         return decisions
 
@@ -52,6 +60,7 @@ class BlindPhaseSearcher():
         return chosen_angles
 
     def remove_cycle_slips(self, i_mode, lb, phases_mode):
+        intert_phases = np.zeros_like(phases_mode)
         for k,cur_phase in enumerate(phases_mode):
              cur_phase += 0.5*np.pi*self.counter[i_mode]
              delta_phase = cur_phase - self.prev_phases[i_mode] 
@@ -65,17 +74,21 @@ class BlindPhaseSearcher():
                 self.counter[i_mode] += 1
                 cur_phase += 0.5*np.pi
              self.prev_phases[i_mode] = cur_phase
-             phases_mode[k] = cur_phase
+             intert_phases[k] = cur_phase
+        return intert_phases
 
     def recover_phase(self,block_distr : BlockDistributer):
         phases = []
         block = block_distr.block_compensated
         lb = block_distr.lb
         for i_mode in range(block.shape[0]):
-            decisions =  self.__find_best_decisions(i_mode,block_distr,block[i_mode])
+
+            block_appended = np.append(self.buffer[i_mode],block[i_mode])
+            self.buffer[i_mode] = block[i_mode,-self.lbp*2:]
+            block[i_mode] = block_appended[self.lbp:-self.lbp]
+            decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended)
             phases_mode = self.__select_angles(self.angles,decisions)
-            #phases_mode = np.unwrap(phases_mode)
-            self.remove_cycle_slips(i_mode, lb, phases_mode)
+#            phases_mode = self.remove_cycle_slips(i_mode, lb, phases_mode)
             phases.append(phases_mode)
             self.phase_collection[i_mode].extend(phases_mode)
                    
@@ -83,6 +96,11 @@ class BlindPhaseSearcher():
         self.i_block+=1
         block_phaserec = block*np.exp(1.j*phases)
         block_distr.insert_compensated_block(block_phaserec)
+        block_distr.recalculate_shifted_fd_block(-self.lbp)
+            
+
+
+        
 
 
 

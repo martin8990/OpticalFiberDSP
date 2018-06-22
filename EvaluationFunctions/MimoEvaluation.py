@@ -45,7 +45,7 @@ def calculate_BER(sig,range : np.array, synced=False,signal_rx = None):
         errs = np.count_nonzero(tx_synced ^ bits_demod, axis=-1)
         return np.asarray(errs) / bits_demod.shape[1]
 
-def seperate_per_bit(constellation,answers,sig,lb):
+def seperate_per_bit(constellation,answers,sig,lb,shift = 0):
     bit_sigs = []
     for i_mode in range(sig.shape[0]):
         mode_bit_sigs = []
@@ -53,7 +53,7 @@ def seperate_per_bit(constellation,answers,sig,lb):
             mode_bit_sigs.append([])    
         for k in range(int(lb/2),sig.shape[1]):
             my_answer = answers[i_mode,k]
-            mode_bit_sigs[my_answer].append(sig[i_mode,k-int(lb/2)])
+            mode_bit_sigs[my_answer].append(sig[i_mode,k-int(lb/2) + shift])
         mode_bit_sigs_arr = []
         for i_bit in range(len(constellation)):
             mode_bit_sigs_arr.append(np.asarray(mode_bit_sigs[i_bit]))

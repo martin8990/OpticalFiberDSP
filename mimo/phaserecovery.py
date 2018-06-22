@@ -5,7 +5,7 @@ import numpy as np
 
 def __denoise(lb, nearest_dist_per_angle):
     csum = np.cumsum(nearest_dist_per_angle, axis=0)
-    nearest_dist_per_angle_denoised = csum[2*lb:]-csum[:-2*lb] # WOW
+    nearest_dist_per_angle_denoised = csum[2*lb:]-csum[:-2*lb] 
     return nearest_dist_per_angle_denoised
 
 def __get_angle_id_with_nearest_distance(nearest_dist_per_angle_denoised):

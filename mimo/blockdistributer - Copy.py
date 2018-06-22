@@ -74,6 +74,7 @@ class BlockDistributer():
         if i_block > 1:
             inputrange = range(i_block * lb - lb + shift,i_block * lb + lb + shift)
             double_block_fd = np.zeros_like(self.double_block)
+            print(inputrange)
             for i_input in range(double_block_fd.shape[0]):
                 for i_ovsmpl in range(double_block_fd.shape[1]):
                     double_block_fd[i_input,i_ovsmpl] = np.fft.fft(self.sig_separated[i_input,i_ovsmpl,inputrange])

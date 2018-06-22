@@ -5,8 +5,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{58a347be-2db0-4756-b8e0-a8f1353af3d6}</ProjectGuid>
     <ProjectHome />
-    <StartupFile />
-    <SearchPath />
+    <StartupFile>Testing\HybridTest.py</StartupFile>
+    <SearchPath>pyqt_mimo</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
@@ -37,6 +37,7 @@
     <Compile Include="EvaluationFunctions\__init__.py" />
     <Compile Include="Impairments\Impairments.py" />
     <Compile Include="mimo\asdasd.py" />
+    <Compile Include="mimo\blockdistributer - Copy.py" />
     <Compile Include="mimo\blockdistributer.py" />
     <Compile Include="mimo\compensator.py" />
     <Compile Include="mimo\error_calculator.py" />
@@ -103,7 +104,7 @@
     <Folder Include="mimo\Tests" />
     <Folder Include="PlotFunctions" />
     <Folder Include="PlotFunctions\Legacy" />
-    <Folder Include="pyqt_mimo" />
+    <Folder Include="pyqt_mimo\" />
     <Folder Include="Results" />
     <Folder Include="Results\LB_Comparison" />
     <Folder Include="Results\NanoSecondPMD" />

@@ -20,6 +20,24 @@ class ConvergencePlot(MimoFigure):
     def update_region(self, r_min, r_max):
         pass
 
+class ConvergenceErrorPhasePlot(MimoFigure):
+    def __init__(self,error,phase,name):
+        self.error = error
+        self.phase= phase
+        self.name = name
+
+    def create_figure(self, win):
+       self.fig = win.addPlot(title= self.name + " Convergence")
+       self.fig.addLegend()
+       err_plt = self.fig.plot(self.error, pen=(255,0,0,255), name = 'error')
+       phase_plt = self.fig.plot(self.phase,pen = (0,255,0,255), name = 'phase')
+       
+       self.fig.showGrid(x=True, y=True)
+       self.fig.setRange(yRange = [0,0.5])
+    def update_region(self, r_min, r_max):
+        pass
+
+
 class ConvergencePlotBasic(MimoFigure):
     def __init__(self,error,name):
         self.error = error
