@@ -4,53 +4,21 @@ import matplotlib.pyplot as plt
 from PlotFunctions.MPLMimoPlots import *
 import EvaluationFunctions.MimoEvaluation as eval
 ## Params
-import scipy.io as sio       
+import Testing.CaptureLoader as load       
 import pyqt_mimo.mimoplot as bmp
-N = 20 *10**4
-capture = sio.loadmat('QSM_3.10E-6_51taps.mat', squeeze_me=True)
-    
-sequence = capture['Sequence'][()].astype(np.complex128)
-sequence = np.roll(sequence,24600,axis =1)
-sequence[1] = sequence[1].imag + 1j*sequence[1].real
-#sequence[1] = sequence[1].real -1j*sequence[1].imag
-#sequence[1] = np.roll(sequence[1],1600)
+N = 7 *10**4
 
 
-
-#sequence = np.roll(sequence,1,axis=0)24676
-#sequence[1] = sequence[0]
-
-
-sig = capture['Input'][()].astype(np.complex128)
-
-#sig = np.roll(sig,1,axis = 0)
-#corr = np.correlate(sequence[0],sequence[1],mode='full')
-
-#plt.figure()
-#plt.title('Sequence[0] -> Sequence[1]')
-#plt.plot(corr)
-#plt.show()
-# 13370
-even = range(0,N*2,2)
-corr = np.correlate(sequence[1],sig[1,1:sequence.shape[1]*2:2],mode = 'full')
-
-#plt.figure()
-#plt.title('Sequence -> sig')
-#plt.plot(np.abs(corr))
-#plt.show()
-
-
-sig = sig*20
+sequence,sig= load.load_harder_capture()
+   
 sig = sig[:,:N*2]
-plot_constellation(sig,"Origin",False)
-#plt.figure()
+#plot_constellation(sig,"Origin",False)
+#plt.show()
+
 #plt.scatter(sequence[0].real,sequence[0].imag)
 #plt.show()
 
-#constel_arr = np.asarray(constellation) 
-#plt.scatter(constel_arr.real,constel_arr.imag)
-#plt.show()
-lb = 256 # multiplied with ovsmpl
+lb = 64 # multiplied with ovsmpl
 mu_martin = 5e-4
 
 t_conv = N-50000
@@ -90,6 +58,6 @@ for i_mode in range(nmodes):
     row_figs = []
     row_figs.append(bmp.ConvergencePlotBasic(err_martin[i_mode],name))
     row_figs.append(bmp.ConstellationPlot(bit_sigs[i_mode],N,name))
-    row_figs.append(bmp.TapsPlot(np.append(taps_martin[:,i_mode],N,name))
+    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode],N,name))
     figs.append(row_figs)
 bmp.plot_interactive_mimo(figs,t_conv,t_conv+10000)
