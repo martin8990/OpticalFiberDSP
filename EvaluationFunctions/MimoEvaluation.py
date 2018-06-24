@@ -28,7 +28,16 @@ def calculate_impulse_response(y : np.array,x : np.array):
     Y = np.fft.fft(y)
     X = np.fft.fft(x[0:len(y)])
     return np.fft.ifft(Y/X)
-
+    def AddTrainingLoops(self,sig : np.ndarray,ovsmpl,nloops : int):
+        n_training_syms = self.n_training_syms
+        training_samps = sig[:,:ovsmpl * n_training_syms]
+        sig_with_loops = sig.copy()
+        
+        for i_loop in range(nloops):
+            sig_with_loops = np.append(training_samps,sig_with_loops,axis = 1)
+            self.trainingSyms = np.append(self.trainingSyms,self.trainingSyms,axis = 1)
+        self.n_training_syms = n_training_syms + (nloops * n_training_syms)
+        return sig_with_loops, self.trainingSyms
 
 #### NEED QAMPY SIGNAL! ####
 def calculate_BER(sig,range : np.array, synced=False,signal_rx = None):
@@ -42,6 +51,8 @@ def calculate_BER(sig,range : np.array, synced=False,signal_rx = None):
         # TODO: need to rename decode to demodulate
         bits_demod = sig.demodulate(syms_demod)
         tx_synced = sig.demodulate(symbols_tx)
+        print(tx_synced)
+        print(bits_demod)
         errs = np.count_nonzero(tx_synced ^ bits_demod, axis=-1)
         return np.asarray(errs) / bits_demod.shape[1]
 
@@ -71,3 +82,12 @@ def derive_constellation_and_answers(sequence):
                 constellation.append(sym)
             answers[i_mode,k] = constellation.index(sym)
     return constellation,answers
+
+def AddTrainingLoops(sig,sequence,ovsmpl,nloops,syms_per_loop):
+    
+     
+    for i_loop in range(nloops):
+        sig = np.append(sig[:,:syms_per_loop*ovsmpl],sig,axis = 1)
+        sequence = np.append(sequence[:,:syms_per_loop],sequence,axis = 1)
+
+    return sequence,sig

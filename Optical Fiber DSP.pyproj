@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{58a347be-2db0-4756-b8e0-a8f1353af3d6}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>Testing\SjoerdSigTest.py</StartupFile>
+    <StartupFile>Testing\HybridTest.py</StartupFile>
     <SearchPath>pyqt_mimo</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -67,11 +67,15 @@
     <Compile Include="pyqt_mimo\constellationplot.py" />
     <Compile Include="pyqt_mimo\convergenceplot.py" />
     <Compile Include="pyqt_mimo\mimofigure.py" />
+    <Compile Include="pyqt_mimo\pyqt_mimo_app\plot_controller.py" />
+    <Compile Include="pyqt_mimo\pyqt_mimo_app\mimoapp.py" />
     <Compile Include="pyqt_mimo\mimoplot.py" />
+    <Compile Include="pyqt_mimo\pyqt_mimo_app\__init__.py" />
     <Compile Include="pyqt_mimo\tapsplot.py" />
     <Compile Include="pyqt_mimo\__init__.py" />
     <Compile Include="Testing\CrossCor.py" />
     <Compile Include="Testing\FourierTransform\FourierTransform.py" />
+    <Compile Include="Testing\PlotControllerTest.py" />
     <Compile Include="Testing\SignalLoader - Copy.py" />
     <Compile Include="Testing\WideTest.py" />
     <Compile Include="Testing\HybridTest.py" />
@@ -103,6 +107,7 @@
     <Folder Include="PlotFunctions" />
     <Folder Include="PlotFunctions\Legacy" />
     <Folder Include="pyqt_mimo\" />
+    <Folder Include="pyqt_mimo\pyqt_mimo_app\" />
     <Folder Include="Results" />
     <Folder Include="Results\LB_Comparison" />
     <Folder Include="Results\NanoSecondPMD" />

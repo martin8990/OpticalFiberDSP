@@ -16,11 +16,11 @@ from qampy.core.filter import *
 
 ## Params
         
-N = 15 * 10**4
+N = 10 * 10**4
 
 SNR = 20
 lb = 256 
-mu_martin = 1e-3
+mu_martin = 0#1e-3
 
 phase_noise = 100e3 
 t_conv = N-50000
@@ -94,19 +94,13 @@ slips_down = np.asarray(phase_recoverer.slips_down)
 
 figs = []
 
-def get_convergence_plot(err_martin,phase,slips_up,slips_down,name):
-    if len(slips_up) > 0 and len(slips_up) > 0:
-        return bmp.ConvergencePlot(err_martin,phase,slips_up,slips_down,name)
-    elif len(phase)>0 :
-        return bmp.ConvergenceErrorPhasePlot(err_martin,phase,name)
-    else :
-        return bmp.ConvergencePlotBasic(err_martin,name)
+
 
 
 for i_mode in range(nmodes):
     name = "Mode : " + str(i_mode)  
     row_figs = []
-    row_figs.append(get_convergence_plot(err_martin[i_mode],phase[i_mode],slips_up[i_mode],slips_down[i_mode],name))
+    row_figs.append(bmp.ConvergencePlot(err_martin[i_mode],name,phase = phase[i_mode],slipups= slips_up[i_mode],slipdowns= slips_down[i_mode]))
     row_figs.append(bmp.ConstellationPlot(bit_sigs[i_mode],N,name))
     row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode],N,name))
     figs.append(row_figs)

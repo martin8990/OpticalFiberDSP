@@ -16,8 +16,7 @@ class MimoErrorCalculator():
         nmodes = block_distr.nmodes
         lb = block_distr.lb
         nblocks = block_distr.nblocks
-        size = nmodes * lb * block_distr.nblocks
-        self.error = np.zeros(size).reshape(nmodes,nblocks*lb)
+        self.error = np.zeros((nmodes , lb *nblocks),dtype=np.complex128)
         self.i_block = 0
         self.nmodes = block_distr.nmodes
 
@@ -54,16 +53,7 @@ class TrainedLMS(MimoErrorCalculator):
         self.offset = offset
         super().__init__(block_distr)
 
-    def AddTrainingLoops(self,sig : np.ndarray,ovsmpl,nloops : int):
-        n_training_syms = self.n_training_syms
-        training_samps = sig[:,:ovsmpl * n_training_syms]
-        sig_with_loops = sig.copy()
-        
-        for i_loop in range(nloops):
-            sig_with_loops = np.append(training_samps,sig_with_loops,axis = 1)
-            self.trainingSyms = np.append(self.trainingSyms,self.trainingSyms,axis = 1)
-        self.n_training_syms = n_training_syms + (nloops * n_training_syms)
-        return sig_with_loops
+
 
     # Insert one block for each input
     def calculate_error(self,block):
