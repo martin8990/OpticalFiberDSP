@@ -2,12 +2,13 @@ import numpy as np
 from mimo.mimo import BlockDistributer
 
 class BlindPhaseSearcher():
-    def __init__(self,block_distr : BlockDistributer,num_testangles,constellation,len_phase_block):
+    def __init__(self,block_distr : BlockDistributer,num_testangles,constellation,len_phase_block,search_area = np.pi/2):
         b = np.arange(num_testangles)
-        self.angles = b/num_testangles * np.pi/2
+        self.angles = b/num_testangles * search_area
         self.constellation = constellation
         self.i_block = 0
         self.num_testangles =num_testangles
+        self.sa = search_area
         
         nmodes = block_distr.nmodes
         nblocks = block_distr.nblocks
@@ -20,14 +21,16 @@ class BlindPhaseSearcher():
         self.slips_down = []
 
         for i_mode in range(nmodes):
-            self.phase_collection.append([])
-            self.slips_up.append([])
-            self.slips_down.append([])
+            self.phase_collection.append([0])
+            self.slips_up.append([0])
+            self.slips_down.append([0])
         
         self.prev_phases = np.ones(nmodes) * 0
         self.counter = np.zeros(nmodes)
         self.i_block = 0
-        
+    
+
+
                
     def __denoise(self, nearest_dist_per_angle):
         csum = np.cumsum(nearest_dist_per_angle, axis=0)
@@ -59,22 +62,23 @@ class BlindPhaseSearcher():
         return chosen_angles
 
     def remove_cycle_slips(self, i_mode, lb, phases_mode):
-        intert_phases = np.zeros_like(phases_mode)
+        inert_phases = np.zeros_like(phases_mode)
+        sa = self.sa
+        dsa = self.sa/2
         for k,cur_phase in enumerate(phases_mode):
-             cur_phase += 0.5*np.pi*self.counter[i_mode]
+             cur_phase += sa*self.counter[i_mode]
              delta_phase = cur_phase - self.prev_phases[i_mode] 
-             
-             if delta_phase > 0.25*np.pi:
+             if delta_phase > dsa:
                 self.slips_up[i_mode].append(k + lb * self.i_block)
                 self.counter[i_mode] -= 1
-                cur_phase -= 0.5*np.pi
-             elif delta_phase < -0.25*np.pi:
+                cur_phase -= sa
+             elif delta_phase < -dsa:
                 self.slips_down[i_mode].append(k + lb * self.i_block)
                 self.counter[i_mode] += 1
-                cur_phase += 0.5*np.pi
+                cur_phase += sa
              self.prev_phases[i_mode] = cur_phase
-             intert_phases[k] = cur_phase
-        return intert_phases
+             inert_phases[k] = cur_phase
+        return inert_phases
 
     def recover_phase(self,block_distr : BlockDistributer):
         phases = []

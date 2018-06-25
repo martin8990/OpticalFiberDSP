@@ -122,7 +122,18 @@ class WideBlockDistributer(BlockDistributer):
         self.range_block = range_block
         self.i_block = i_block           
     
-#Todo overwrite shifted FD
+    def recalculate_shifted_fd_block(self,shift):
+        i_block = self.i_block
+        lb = self.lb
+
+        if i_block > 1:
+            inputrange = range(i_block * lb - lb + shift,i_block * lb + lb + shift)
+            double_block_fd = np.zeros_like(self.double_block)
+            for i_input in range(double_block_fd.shape[0]):
+                for i_ovsmpl in range(double_block_fd.shape[1]):
+                    for i_wide in [0,1]:
+                        double_block_fd[i_input,i_ovsmpl,i_wide] = np.fft.fft(self.sig_separated[i_input,i_ovsmpl,i_wide,inputrange])
+            self.double_block_fd = double_block_fd
            
     def __init__(self,sig,lb,ovsmpl):
         super().__init__(sig,lb,ovsmpl)

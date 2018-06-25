@@ -17,7 +17,7 @@ from qampy.core.filter import *
 
 ## Params
         
-N = 8 * 10**4
+N = 5 * 10**4
 
 SNR = 20
 lb = 64 
@@ -28,16 +28,21 @@ t_conv = N-50000
 t_stop = N-1000
 
 ovsmpl = 2
-nmodes = 1
+nmodes = 2
 training_loops = 0
 ntraining_syms = 10000
 lbp = 10
 ## Transmission
 
-
+sequence,sig= load.load_harder_capture()
+sequence = sequence[:nmodes,:N]
+while sequence.shape[1] < N:
+    sequence = np.append(sequence,sequence,axis = 1)
+    
+sequence = sequence[:,:N]
 
 sig = signals.SignalQAMGrayCoded(4,N , fb=25e9, nmodes=nmodes)
-sequence = sig.copy()
+sig[:,:] = sequence
 
 if ovsmpl > 1:
     sig = sig.resample(ovsmpl*sig.fb,beta  =1)
@@ -61,7 +66,7 @@ errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,in
 
 
 tap_updater = mimo.WideFrequencyDomainTapUpdater(mu_martin,block_distr)
-phase_recoverer = mimo.BlindPhaseSearcher(block_distr,40,constellation,lbp)
+phase_recoverer = mimo.BlindPhaseSearcher(block_distr,40,constellation,lbp,0.5)
 
 sig_martin = sequence.copy()
 #sig_martin[:,:] =  mimo.equalize_blockwize(block_distr,tap_updater,errorcalc)
@@ -79,7 +84,7 @@ bit_sigs = eval.seperate_per_bit(constellation,answers,sig_martin,lb,lbp)
 
 
 #print("BER_Martin = ",eval.calculate_BER(sig_martin,range(t_conv,t_conv+ 40000)))
-print("BER_Martin_own_method = ",eval.calculate_BER_Martin(sig_martin,answers,constellation,t_conv,t_stop-t_conv,lb,lbp))
+#print("BER_Martin_own_method = ",eval.calculate_BER_Martin(sig_martin,answers,constellation,t_conv,40000,lb,lbp))
 #except:
 #    print("BER failed")
 #print("BER_Qampy = ", sig_QAMPY.cal_ber())

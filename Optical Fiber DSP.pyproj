@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{58a347be-2db0-4756-b8e0-a8f1353af3d6}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>Testing\SjoerdSigTestWide.py</StartupFile>
+    <StartupFile>Testing\HybridTest.py</StartupFile>
     <SearchPath>pyqt_mimo</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -75,6 +75,7 @@
     <Compile Include="pyqt_mimo\__init__.py" />
     <Compile Include="Testing\CrossCor.py" />
     <Compile Include="Testing\FourierTransform\FourierTransform.py" />
+    <Compile Include="Testing\8QamTest.py" />
     <Compile Include="Testing\PlotControllerTest.py" />
     <Compile Include="Testing\SignalLoader - Copy.py" />
     <Compile Include="Testing\SjoerdSigTestWide.py" />

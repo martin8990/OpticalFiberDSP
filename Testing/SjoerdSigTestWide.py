@@ -17,6 +17,7 @@ sig = sig[:,:N*2]
 #plt.show()
 
 lb = 64 # multiplied with ovsmpl
+lbp = 10
 mu_martin = 1e-3
 
 t_conv = N-50000
@@ -34,16 +35,16 @@ sequence,sig= eval.AddTrainingLoops(sig,sequence,ovsmpl,training_loops,ntraining
 N = N + training_loops * ntraining_syms
 constellation,answers = eval.derive_constellation_and_answers(sequence)
 block_distr = mimo.WideBlockDistributer(sig,lb,ovsmpl)
-errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms + training_loops * ntraining_syms,-int(lb/2))
+errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms + training_loops * ntraining_syms,-int(lb/2) - lbp)
 
 
 #sig_with_loops = errorcalc.AddTrainingLoops(sig,ovsmpl,training_loops)
 #sig_martin = sig.copy()[:,:N + training_loops *  ntraining_syms]
  
 tap_updater = mimo.WideFrequencyDomainTapUpdater(mu_martin,block_distr)
-phase_recoverer = mimo.BlindPhaseSearcher(block_distr,30,constellation,6)
+phase_recoverer = mimo.BlindPhaseSearcher(block_distr,40,constellation,lbp,0.5)
 
-sig_martin =  mimo.equalize_blockwize_widely(block_distr,tap_updater,errorcalc)
+sig_martin =  mimo.equalize_blockwize(block_distr,tap_updater,errorcalc,phase_recoverer,widely_linear=True)
 #sig_martin = mimo.equalize_blockwize_with_phaserec(block_distr,tap_updater,errorcalc,phase_recoverer)
 taps_martin = tap_updater.retrieve_timedomain_taps()
 err_martin = errorcalc.retrieve_error()
@@ -52,7 +53,7 @@ phase = np.asarray(phase_recoverer.phase_collection)
 slips_up = np.asarray(phase_recoverer.slips_up)
 slips_down = np.asarray(phase_recoverer.slips_down)
 
-bit_sigs = eval.seperate_per_bit(constellation,answers,sig_martin,lb)
+bit_sigs = eval.seperate_per_bit(constellation,answers,sig_martin,lb,lbp)
 
 #BER = eval.calculate_BER_Martin(sig,answers,constellation,10000,10000,lb,0)
 #print("Ber : " + str(BER))
