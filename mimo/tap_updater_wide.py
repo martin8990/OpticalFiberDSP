@@ -24,7 +24,8 @@ class WideTapUpdater():
 
         CTap = np.int(lb / 2)
         for i_output in range(nmodes):
-            h[i_output,i_output,0,0,CTap] = 1 + 0j
+            h[i_output,i_output,0,0,CTap] = 0.5 + 0j
+            h[i_output,i_output,0,1,CTap] = 0.5 + 0j
         for i_input in range(nmodes):
             for i_output in range(nmodes):
                 for i_ovsmpl in range(ovsmpl):

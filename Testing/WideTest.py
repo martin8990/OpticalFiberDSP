@@ -54,11 +54,11 @@ constellation,answers = eval.derive_constellation_and_answers(sequence)
 
 block_distr = mimo.WideBlockDistributer(sig,lb,ovsmpl)
 
-#errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,int(-lb/2))
+errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,int(-lb/2))
 
 #sig = errorcalc.AddTrainingLoops(sig,ovsmpl,training_loops)
 
-errorcalc = mimo.CMAErrorCalculator(block_distr)
+#errorcalc = mimo.CMAErrorCalculator(block_distr)
 tap_updater = mimo.WideFrequencyDomainTapUpdater(mu_martin,block_distr)
 phase_recoverer = mimo.BlindPhaseSearcher(block_distr,20,constellation,lbp)
 
@@ -92,19 +92,11 @@ slips_down = np.asarray(phase_recoverer.slips_down)
 
 figs = []
 
-def get_convergence_plot(err_martin,phase,slips_up,slips_down,name):
-    if len(slips_up) > 0 and len(slips_up) > 0:
-        return bmp.ConvergencePlot(err_martin,phase,slips_up,slips_down,name)
-    elif len(phase)>0 :
-        return bmp.ConvergenceErrorPhasePlot(err_martin,phase,name)
-    else :
-        return bmp.ConvergencePlotBasic(err_martin,name)
-
 
 for i_mode in range(nmodes):
     name = "Mode : " + str(i_mode)  
     row_figs = []
-    row_figs.append(get_convergence_plot(err_martin[i_mode],phase[i_mode],slips_up[i_mode],slips_down[i_mode],name))
+    row_figs.append(bmp.ConvergencePlot(err_martin[i_mode],name,ntrainingsyms=ntraining_syms,nloops=training_loops))
     row_figs.append(bmp.ConstellationPlot(bit_sigs[i_mode],N,name))
     row_figs.append(bmp.TapsPlot(np.append(taps_martin[:,i_mode,0],taps_martin[:,i_mode,1],axis = 0),N,name))
     figs.append(row_figs)

@@ -16,11 +16,11 @@ from qampy.core.filter import *
 
 ## Params
         
-N = 10 * 10**4
+N = 30 * 10**4
 
-SNR = 20
+SNR = 10
 lb = 256 
-mu_martin = 0#1e-3
+mu_martin = 1e-3
 
 phase_noise = 100e3 
 t_conv = N-50000
@@ -77,10 +77,11 @@ bit_sigs = eval.seperate_per_bit(constellation,answers,sig_martin,lb,lbp)
 #plt.show()
 #sig_martin = phaserec.blind_phase_search(sig_martin,30,constellation,100)
 
-try : 
-    print("BER_Martin = ",eval.calculate_BER(sig_martin,range(t_conv,t_conv+ 5000)))
-except:
-    print("BER failed")
+
+print("BER_Martin = ",eval.calculate_BER(sig_martin,range(t_conv,t_conv+ 40000)))
+print("BER_Martin_own_method = ",eval.calculate_BER_Martin(sig_martin,answers,constellation,t_conv,40000,lb,lbp))
+#except:
+#    print("BER failed")
 #print("BER_Qampy = ", sig_QAMPY.cal_ber())
 
 #plot_constellation(sig_martin[:,t_conv:t_stop],'Martin',False)

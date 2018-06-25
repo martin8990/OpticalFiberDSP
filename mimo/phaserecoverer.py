@@ -96,6 +96,7 @@ class BlindPhaseSearcher():
         block_phaserec = block*np.exp(1.j*phases)
         block_distr.insert_compensated_block(block_phaserec)
         block_distr.recalculate_shifted_fd_block(-self.lbp)
+        block_distr.phases = phases
             
 
 

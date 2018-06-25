@@ -88,6 +88,7 @@ class BlockDistributer():
         self.sig_separated = self._separate_oversampled_samples(sig)
         self.sig_compensated = np.zeros(nmodes*nsyms,dtype=np.complex128).reshape(nmodes,nsyms)
         self.nblocks = int(nsyms/lb)
+        self.phases = np.zeros((nmodes,lb))
 
 class WideBlockDistributer(BlockDistributer):
        

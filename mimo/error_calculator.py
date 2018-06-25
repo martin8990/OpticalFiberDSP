@@ -23,6 +23,7 @@ class MimoErrorCalculator():
     def start_error_calculation(self,block_distr : BlockDistributer):
         block = block_distr.block_compensated
         err = self.calculate_error(block)
+        err = err*np.exp(1.j*-block_distr.phases)
         block_distr.insert_block_error(err)
         self.error[:,self.i_block*block_distr.lb:(self.i_block+1)*block_distr.lb] = err
         self.i_block+=1

@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.mlab as mlab
 
-
 def calculate_final_error(err : list,limit_lower,limit_upper)-> list:
     list_final_error = []
     
@@ -43,18 +42,38 @@ def calculate_impulse_response(y : np.array,x : np.array):
 def calculate_BER(sig,range : np.array, synced=False,signal_rx = None):
     
         sig = sig[:,range]
-        if signal_rx == None:
-            signal_rx = sig._signal_present(signal_rx)
-        nmodes = signal_rx.shape[0]
-        syms_demod = sig.make_decision(signal_rx)
+        
+        
+        nmodes = sig.shape[0]
+        syms_demod = sig.make_decision(sig[:,:])
+        
         symbols_tx, syms_demod = sig._sync_and_adjust(sig.symbols, syms_demod, synced)
         # TODO: need to rename decode to demodulate
         bits_demod = sig.demodulate(syms_demod)
         tx_synced = sig.demodulate(symbols_tx)
-        print(tx_synced)
-        print(bits_demod)
+        
+
         errs = np.count_nonzero(tx_synced ^ bits_demod, axis=-1)
+        print(errs)
         return np.asarray(errs) / bits_demod.shape[1]
+
+
+def make_decision(sig,constellation):
+    dists = (np.abs(sig[:,:,np.newaxis] - constellation))**2    
+    decisions = dists.argmin(axis = 2)
+    return decisions
+    
+            
+
+def calculate_BER_Martin(sig,answers,constellation,start, length,lb,shift):    
+    sig = sig[:,start -int(lb/2) + shift : start+ length -int(lb/2) + shift]
+    answers = answers[:,start:start +length]
+        
+    nmodes = sig.shape[0]
+    decisions = make_decision(sig[:,:],constellation)
+    errs = np.count_nonzero(answers - decisions, axis=-1)
+    print(errs)
+    return np.asarray(errs) / answers.shape[1]
 
 def seperate_per_bit(constellation,answers,sig,lb,shift = 0):
     bit_sigs = []
