@@ -28,3 +28,6 @@ plt.plot(Y_martin.real)
 plt.subplot(2,1,2)
 plt.plot(Y_martin.imag)
 plt.show()
+
+
+

@@ -67,8 +67,9 @@ class TrainedLMS(MimoErrorCalculator):
             e = np.zeros_like(block)
             # TODO : Convert to matrix implementation
             for i_output in range(block.shape[0]):
-                best_sym = np.argmin(np.abs( self.constellation-block[i_output,:,np.newaxis])) 
-                e[i_output] =  self.constellation[best_sym] - block[i_output]
+                best_sym = np.argmin(np.abs( self.constellation-block[i_output,:,np.newaxis]),axis=1) 
+                for k in range(lb):
+                    e[i_output,k] =  self.constellation[best_sym[k]] - block[i_output,k]
                                 
         self.counter = self.counter + lb  
         return e
