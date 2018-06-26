@@ -141,12 +141,14 @@ def equalize(sig,sequence):
     mu_martin = 1e-3
     nmodes = sig.shape[0]
     N = sequence.shape[1]
+    print("YO")
     block_distr = mimo.BlockDistributer(sig,lb,ovsmpl)
     errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,int(-lb/2))
 
     tap_updater = mimo.FrequencyDomainTapUpdater(mu_martin,block_distr)
     phase_recoverer = mimo.BlindPhaseSearcher(block_distr,40,constellation,lbp)
 
+  
     sig_martin = sequence.copy()
     sig_martin[:,:] = mimo.equalize_blockwize(block_distr,tap_updater,errorcalc)
     

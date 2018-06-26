@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{58a347be-2db0-4756-b8e0-a8f1353af3d6}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>Testing\SjoerdSigTestWide.py</StartupFile>
+    <StartupFile>Testing\Tester.py</StartupFile>
     <SearchPath>pyqt_mimo</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -74,31 +74,24 @@
     <Compile Include="pyqt_mimo\tapsplot.py" />
     <Compile Include="pyqt_mimo\__init__.py" />
     <Compile Include="Testing\Equalizer.py" />
-    <Compile Include="Testing\CrossCor.py" />
     <Compile Include="Testing\FourierTransform\GPUFFT.py" />
     <Compile Include="Testing\FourierTransform\FourierTransform.py" />
-    <Compile Include="Testing\8QamTest.py" />
-    <Compile Include="Testing\PlotControllerTest.py" />
-    <Compile Include="Testing\SignalLoader - Copy.py" />
-    <Compile Include="Testing\SjoerdSigTestWide.py" />
-    <Compile Include="Testing\WideTest.py" />
-    <Compile Include="Testing\HybridTest.py" />
+    <Compile Include="Testing\SimulationLoader.py" />
+    <Compile Include="Testing\Legacy\PlotControllerTest.py" />
+    <Compile Include="Testing\Legacy\SignalLoader - Copy.py" />
+    <Compile Include="Testing\Tester.py" />
     <Compile Include="Testing\Legacy\AutoTest LMS.py" />
     <Compile Include="Testing\Legacy\AutoTest.py" />
     <Compile Include="Testing\Legacy\AutoTestResample.py" />
     <Compile Include="Testing\Legacy\CompareData.py" />
     <Compile Include="Testing\Legacy\CSVAutoTest.py" />
     <Compile Include="Testing\Legacy\DelayAfterTestPyQtGraph.py" />
-    <Compile Include="Testing\multi_qam_test.py" />
-    <Compile Include="Testing\ovsmpldTaps.py" />
     <Compile Include="Testing\PandaTest\AutoTest.py" />
     <Compile Include="Testing\PandaTest\DirectoryCreator.py" />
     <Compile Include="Testing\PandaTest\MimoRunner.py" />
     <Compile Include="Testing\PandaTest\PandaManager.py" />
     <Compile Include="Testing\PandaTest\SignalCreator.py" />
-    <Compile Include="Testing\Qampy_debug.py" />
     <Compile Include="Testing\CaptureLoader.py" />
-    <Compile Include="Testing\SjoerdSigTest.py" />
     <Compile Include="Testing\__init__.py" />
   </ItemGroup>
   <ItemGroup>
