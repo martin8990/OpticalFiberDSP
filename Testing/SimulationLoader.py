@@ -8,8 +8,7 @@ import pickle
 from qampy.core.filter import *
 import Testing.Equalizer as eq
 import Testing.CaptureLoader as load
-def load_8QAM():
-    N = 10 * 10**4
+def load_8QAM(N):
 
     SNR = 20
 
@@ -18,7 +17,7 @@ def load_8QAM():
     ovsmpl = 2
     nmodes = 2
 
-    sequence,sig= load.load_harder_capture()
+    sequence,sig= load.load_harder_capture(N)
     sequence = sequence[:nmodes,:N]
 
     while sequence.shape[1] < N:

@@ -65,10 +65,9 @@ def make_decision(sig,constellation):
     
             
 
-def calculate_BER_Martin(sig,answers,constellation,start, length,lb,shift=0):    
-    sig = sig[:,start -int(lb/2) + shift : start+ length -int(lb/2) + shift]
-    answers = answers[:,start:start +length]
-    print(sig.shape)
+def calculate_BER_Martin(sig,answers,constellation,start, stop ,offset):    
+    sig = sig[:,start + offset : stop + offset]
+    answers = answers[:,start:stop]
     decisions = make_decision(sig[:,:],constellation)
     errs = np.count_nonzero(answers - decisions, axis=-1)
     print(errs)
