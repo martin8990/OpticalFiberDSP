@@ -1,8 +1,10 @@
 import numpy as np
 from mimo.mimo import BlockDistributer
 
+# TODO : Class is to long, should be refactored
 class BlindPhaseSearcher():
     def __init__(self,block_distr : BlockDistributer,sequence,n_trainingsyms,num_testangles,constellation,len_phase_block,search_area = np.pi/2):
+    
         b = np.arange(num_testangles)
         self.angles = b/num_testangles * search_area
         self.constellation = constellation
@@ -30,10 +32,7 @@ class BlindPhaseSearcher():
         self.prev_phases = np.ones(nmodes) * 0
         self.counter = np.zeros(nmodes)
         self.i_block = 0
-    
-
-
-               
+                   
     def __denoise(self, nearest_dist_per_angle):
         csum = np.cumsum(nearest_dist_per_angle, axis=0)
         nearest_dist_per_angle_denoised = csum[2*self.lbp:]-csum[:-2*self.lbp] 
@@ -119,7 +118,7 @@ class BlindPhaseSearcher():
         
       
         block_distr.insert_compensated_block(block_phaserec)
-        block_distr.recalculate_shifted_fd_block(-self.lbp)
+        block_distr.shift_fd_block(-self.lbp)
         block_distr.phases = phases
             
 

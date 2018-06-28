@@ -52,7 +52,6 @@
     <Compile Include="mimo\mimo.py" />
     <Compile Include="mimo\phaserecoverer.py" />
     <Compile Include="mimo\phaserecovery.py" />
-    <Compile Include="mimo\tap_updater_wide.py" />
     <Compile Include="mimo\tap_updater.py" />
     <Compile Include="mimo\Tests\mimoTests.py" />
     <Compile Include="mimo\__init__.py" />

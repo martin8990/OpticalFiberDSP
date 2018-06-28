@@ -67,20 +67,19 @@ def equalize(sig,sequence,phaserec = False ,widely_linear = False ):
     ovconj = 1
     if widely_linear:
         ovconj = 2
-        block_distr = mimo.BlockDistributer(sig,lb,ovsmpl,ovconj)
-        tap_updater = mimo.WideFrequencyDomainTapUpdater(mu_martin,block_distr)
-    else :    
-        block_distr = mimo.BlockDistributer(sig,lb,ovsmpl,ovconj)
-        tap_updater = mimo.FrequencyDomainTapUpdater(mu_martin,block_distr)
-
-    errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,int(-lb/2))
+   
+    block_distr = mimo.BlockDistributer(sig,lb,ovsmpl,ovconj)
+    tap_updater = mimo.FrequencyDomainTapUpdater(mu_martin,block_distr)
+    errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,int(-lb/2) - lbp)
 
     if phaserec:
         phase_recoverer = mimo.BlindPhaseSearcher(block_distr,sequence,ntraining_syms,40,constellation,lbp)
         sig_martin = mimo.equalize_blockwize(block_distr,tap_updater,errorcalc,phase_recoverer,widely_linear)
+        evaluate_signal(errorcalc, lb, phase_recoverer, sig_martin, tap_updater,constellation,answers,lbp)
     else:
         sig_martin = mimo.equalize_blockwize(block_distr,tap_updater,errorcalc,widely_linear)
+        evaluate_signal(errorcalc, lb, phase_recoverer, sig_martin, tap_updater,constellation,answers)
 
-    evaluate_signal(errorcalc, lb, phase_recoverer, sig_martin, tap_updater,constellation,answers)
 
+    
 

@@ -87,12 +87,13 @@ class BlockDistributer():
         self.range_block = range_block
         self.i_block = i_block           
     
-    def recalculate_shifted_fd_block(self,shift):
+    def shift_fd_block(self,shift):
         i_block = self.i_block
         lb = self.lb
         ovconj = self.ovconj
-        if i_block > 1: # If you try this on the first block range problems arise
-            inputrange = self._get_double_block_range(i_block,lb) + shift
+        if i_block > 1: # First block is out of range
+            # Compensates the shift/delay introduced by phaserecovery
+            inputrange = self._get_double_block_range(i_block,lb) + shift 
             double_block_fd = np.zeros_like(self.double_block)
             for i_input in range(double_block_fd.shape[0]):
                 for i_ovsmpl in range(double_block_fd.shape[1]):

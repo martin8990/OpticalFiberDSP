@@ -8,6 +8,6 @@ import matplotlib.pyplot as plt
 from qampy import signals
 N = 6 *10**4
 
-sequence,sig = load.load_3mode_ez_capture(N)
+sequence,sig = load.load_easiest_capture(N)
 eq.equalize(sig,sequence,True,True)
 
