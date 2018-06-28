@@ -9,7 +9,7 @@
 # lb : blocklength
 
 import numpy as np
-from mimo.blockdistributer import BlockDistributer, WideBlockDistributer
+from mimo.blockdistributer import BlockDistributer
 from mimo.error_calculator import *
 from mimo.tap_updater import *
 from mimo.tap_updater_wide import * 

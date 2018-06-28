@@ -64,12 +64,13 @@ def equalize(sig,sequence,phaserec = False ,widely_linear = False ):
     mu_martin = 2e-3
     nmodes = sig.shape[0]
     N = sequence.shape[1]
-   
+    ovconj = 1
     if widely_linear:
-        block_distr = mimo.WideBlockDistributer(sig,lb,ovsmpl)
+        ovconj = 2
+        block_distr = mimo.BlockDistributer(sig,lb,ovsmpl,ovconj)
         tap_updater = mimo.WideFrequencyDomainTapUpdater(mu_martin,block_distr)
     else :    
-        block_distr = mimo.BlockDistributer(sig,lb,ovsmpl)
+        block_distr = mimo.BlockDistributer(sig,lb,ovsmpl,ovconj)
         tap_updater = mimo.FrequencyDomainTapUpdater(mu_martin,block_distr)
 
     errorcalc = mimo.TrainedLMS(sequence,constellation,block_distr,ntraining_syms,int(-lb/2))

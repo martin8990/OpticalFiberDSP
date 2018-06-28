@@ -1,18 +1,18 @@
 import numpy as np
-from mimo.mimo import WideBlockDistributer
+from mimo.mimo import BlockDistributer
 
 class WideTapUpdater():
     def save_timedomain_taps(self, H, lb, nmodes, ovsmpl):
         for i_input in range(nmodes):
             for i_output in range(nmodes):
                 for i_ovsmpl in range(ovsmpl):
-                    for i_wide in [0,1]:
+                    for i_ovconj in [0,1]:
                         myrange = range(i_ovsmpl,lb*ovsmpl + i_ovsmpl,ovsmpl)
-                        myTaps =np.fft.ifft(H[i_input,i_output,i_ovsmpl,i_wide])[:lb]
-                        self.h_saved[i_input,i_output,i_wide,self.i_block,myrange] = myTaps[::-1]
+                        myTaps =np.fft.ifft(H[i_input,i_output,i_ovsmpl,i_ovconj])[:lb]
+                        self.h_saved[i_input,i_output,i_ovconj,self.i_block,myrange] = myTaps[::-1]
         self.i_block += 1
     
-    def __init__(self,mu,block_distr : WideBlockDistributer):
+    def __init__(self,mu,block_distr : BlockDistributer):
         self.mu = mu
         
         nmodes = block_distr.nmodes
@@ -29,8 +29,8 @@ class WideTapUpdater():
         for i_input in range(nmodes):
             for i_output in range(nmodes):
                 for i_ovsmpl in range(ovsmpl):
-                    for i_wide in [0,1]:
-                        H[i_input,i_output,i_ovsmpl,i_wide] = np.fft.fft(h[i_input,i_output,i_ovsmpl,i_wide])
+                    for i_ovconj in [0,1]:
+                        H[i_input,i_output,i_ovsmpl,i_ovconj] = np.fft.fft(h[i_input,i_output,i_ovsmpl,i_ovconj])
         self.H = H
         self.h = h[:,:,:,:,:lb]
         self.h_saved = np.zeros((nmodes,nmodes,2,block_distr.nblocks,lb*ovsmpl),dtype = np.complex128)
@@ -40,11 +40,11 @@ class WideTapUpdater():
     def retrieve_timedomain_taps(self):
         return self.h_saved
 
-    def update_taps(self,block_distr : WideBlockDistributer):
+    def update_taps(self,block_distr : BlockDistributer):
          raise ValueError("Pick a Tapupdater")
 
 class WideFrequencyDomainTapUpdater(WideTapUpdater):
-    def update_taps(self,block_distr : WideBlockDistributer):
+    def update_taps(self,block_distr : BlockDistributer):
 
         H = self.H
         nmodes = block_distr.nmodes
@@ -58,9 +58,9 @@ class WideFrequencyDomainTapUpdater(WideTapUpdater):
             E = np.fft.fft(np.append(zeros,e[i_output,:]))
             for i_input in range(nmodes):        
                 for i_ovsmpl in range(ovsmpl):
-                    for i_wide in [0,1]:
-                        s_ = np.fft.ifft(np.conj(block_fd[i_input,i_ovsmpl,i_wide]) * E)[:lb]
-                        H[i_input,i_output,i_ovsmpl,i_wide] += mu * np.fft.fft(np.append(s_,zeros))
+                    for i_ovconj in [0,1]:
+                        s_ = np.fft.ifft(np.conj(block_fd[i_input,i_ovsmpl,i_ovconj]) * E)[:lb]
+                        H[i_input,i_output,i_ovsmpl,i_ovconj] += mu * np.fft.fft(np.append(s_,zeros))
         self.H = H
         self.save_timedomain_taps(H, lb, nmodes, ovsmpl)
 

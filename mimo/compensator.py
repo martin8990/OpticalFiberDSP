@@ -31,7 +31,7 @@ def compensate_widely(block_distr : BlockDistributer,H):
         for i_output in range(nmodes):        
             FD_temp = np.zeros(lb*2,dtype = np.complex128)  
             for i_ovsmpl in range(ovsmpl):
-                for i_wide in [0,1]:
-                    FD_temp += double_block_fd[i_input,i_ovsmpl,i_wide] * H[i_input,i_output,i_ovsmpl,i_wide]
+                for i_ovconj in [0,1]:
+                    FD_temp += double_block_fd[i_input,i_ovsmpl,i_ovconj] * H[i_input,i_output,i_ovsmpl,i_ovconj]
             block_compensated[i_output]  += np.fft.ifft(FD_temp)[second_block]
     block_distr.insert_compensated_block(block_compensated)
