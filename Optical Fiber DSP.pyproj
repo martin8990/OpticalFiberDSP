@@ -79,6 +79,7 @@
     <Compile Include="Testing\SimulationLoader.py" />
     <Compile Include="Testing\Legacy\PlotControllerTest.py" />
     <Compile Include="Testing\Legacy\SignalLoader - Copy.py" />
+    <Compile Include="Testing\CaptureTester.py" />
     <Compile Include="Testing\Tester.py" />
     <Compile Include="Testing\Legacy\AutoTest LMS.py" />
     <Compile Include="Testing\Legacy\AutoTest.py" />

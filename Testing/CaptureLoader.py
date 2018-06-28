@@ -49,7 +49,7 @@ def load_3mode_ez_capture(N):
 def load_3mode_hard_capture(N):
     capture = sio.loadmat('3M_9.50E-3_701taps.mat', squeeze_me=True)
     sequence = capture['Sequence'][()].astype(np.complex128)
-    sequence = np.roll(sequence,-11350,axis = 1)
+    sequence = np.roll(sequence,22884 + 1998,axis = 1)
     
     while N > sequence.shape[1]:
         sequence = np.append(sequence,sequence,axis=1)

@@ -10,23 +10,23 @@ import Testing.Equalizer as eq
 import Testing.CaptureLoader as load
 def load_8QAM(N):
 
-    SNR = 20
+    SNR = 40
 
-    phase_noise = 70e3 
+    phase_noise = 0e3 
 
     ovsmpl = 2
     nmodes = 2
 
-    sequence,sig= load.load_harder_capture(N)
-    sequence = sequence[:nmodes,:N]
+    #sequence,sig= load.load_harder_capture(N)
+    #sequence = sequence[:nmodes,:N]
 
-    while sequence.shape[1] < N:
-        sequence = np.append(sequence,sequence,axis = 1)
-    sequence = sequence[:,:N]
+    #while sequence.shape[1] < N:
+    #    sequence = np.append(sequence,sequence,axis = 1)
+    #sequence = sequence[:,:N]
 
     sig = signals.SignalQAMGrayCoded(4,N , fb=25e9, nmodes=nmodes)
-    sig[:,:] = sequence
-
+    #sig[:,:] = sequence
+    sequence = sig.copy()
     if ovsmpl > 1:
         sig = sig.resample(ovsmpl*sig.fb,beta  =1)
 

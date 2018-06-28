@@ -3,16 +3,11 @@ import numpy as np
 import Testing.CaptureLoader as load
 import Testing.SimulationLoader as sload
 import Testing.Equalizer as eq
-N = 7 *10**4
+import PlotFunctions.MPLMimoPlots as mpl
+import matplotlib.pyplot as plt
+from qampy import signals
+N = 6 *10**4
 
-#sequence,sig = sload.load_8QAM(N)
-#sequence,sig = load.load_easiest_capture(N)
 sequence,sig = load.load_3mode_ez_capture(N)
+eq.equalize(sig,sequence,True,True)
 
-#sequence[1] = sequence[1].imag + 1j*sequence[1].real
-    
-print("Loaded signal")
-#eq.equalize(sig,sequence)
-#eq.equalize_phaserec(sig,sequence)
-#eq.equalize_wide_and_phaserec(sig,sequence)
-eq.equalize_wide(sig,sequence)

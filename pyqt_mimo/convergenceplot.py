@@ -18,14 +18,11 @@ class ConvergencePlot(MimoFigure):
        #err_plt = self.fig.plot(self.error.imag, pen=(255,0,0,255), name = 'imag error')
        
        if self.ntrainingsyms!=None:
-           print(self.nloops)
-           print(self.ntrainingsyms)
-           print(len(self.error)-1)
+
 
            ids = (np.arange(self.nloops + 1)+1) * self.ntrainingsyms
            for k in range(ids.shape[0]):
                ids[k] = min(ids[k],len(self.error)-1)
-           print(ids)
 
            train_plt=  self.fig.plot(ids,self.error[ids],pen=None, symbol='star', name = 'training_stop')
       

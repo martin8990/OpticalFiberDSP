@@ -30,20 +30,21 @@ class InteractiveMimoRow :
         self.lr.sigRegionChanged.connect(updatePlot)
         updatePlot()
 
-
-
-def plot_interactive_mimo(mimo_figures_rows : list,lowerbound,upperbound):
-
-    app = QtGui.QApplication([])
-    win = pg.GraphicsWindow(title="Mimo Plotter")
-    win.resize(600 + len(mimo_figures_rows) * 300,300 * len(mimo_figures_rows))
-    win.setWindowTitle('Mimo Plotter')
-
-    pg.setConfigOptions(antialias=True)
     
-    for figure_row in mimo_figures_rows:
-        row = InteractiveMimoRow(win,figure_row,lowerbound,upperbound)
+
+def plot_interactive_mimo(mimo_figures : list,lowerbound,upperbound):
+    app = QtGui.QApplication([])
+    wins = []
+    for ifig,figs in enumerate(mimo_figures):
+        wins.append(pg.GraphicsWindow(title="Mimo Plotter"))
+        wins[ifig].resize(600 + len(figs) * 300,300 * len(figs))
+        wins[ifig].setWindowTitle('Mimo Plotter')
+
+        pg.setConfigOptions(antialias=True)
+        for figure_row in figs:
+            row = InteractiveMimoRow(wins[ifig],figure_row,lowerbound,upperbound)
     QtGui.QApplication.instance().exec_()
+
 
 
 
