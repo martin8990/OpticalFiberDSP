@@ -20,6 +20,8 @@ class Trainer():
         
     def update_block(self,i_block,range_block):
         self.block_sequence = self.sequence_synced[:,range_block]
+        if i_block>0:
+            self.block_sequence_buffered = self.sequence_synced[:,range_block[0]-self.lbp : range_block[-1]+self.lbp+1]
         if i_block>self.ntrainingblocks:
             self.in_training = False
     

@@ -42,9 +42,13 @@ class BlindPhaseSearcher():
         constellation = trainer.constellation
                     
         sig_rotated = block[:,np.newaxis]*np.exp(1j*angles)
-        distances = abs(sig_rotated[:, :, np.newaxis]-constellation)**2
-
-        nearest_dist_per_angle = distances.min(axis=2)
+        if trainer.in_training and block_distr.i_block>1:
+            nearest_dist_per_angle = np.zeros_like(sig_rotated)
+            for i_angle in range(angles.shape[0]):
+                nearest_dist_per_angle[:,i_angle] = abs(sig_rotated[:,i_angle] - trainer.block_sequence_buffered[i_mode])**2
+        else:
+            distances = abs(sig_rotated[:, :, np.newaxis]-constellation)**2
+            nearest_dist_per_angle = distances.min(axis=2)
         nearest_dist_per_angle_denoised = self.__denoise(nearest_dist_per_angle)
         
         decisions = self.__get_angle_id_with_nearest_distance(nearest_dist_per_angle_denoised)
@@ -76,14 +80,7 @@ class BlindPhaseSearcher():
              inert_phases[k] = cur_phase
         return inert_phases
 
-    def peek_phase_offset(self,block,i_mode,trainer : Trainer):
-        
-        seq = trainer.block_sequence[i_mode]
-        angles_sequence = np.arctan2(seq.imag,seq.real)
-        angles_block = np.arctan2(block.imag,block.real)
-        phases = angles_sequence-angles_block
-        
-        return phases
+
       
 
     def recover_phase(self,block_distr : BlockDistributer,trainer: Trainer):
@@ -96,15 +93,8 @@ class BlindPhaseSearcher():
             block_appended = np.append(self.buffer[i_mode],block[i_mode])
             self.buffer[i_mode] = block[i_mode,-self.lbp*2:]
             block[i_mode] = block_appended[self.lbp:-self.lbp]
-            if trainer.in_training:
-                if self.i_block == 0:
-                    phases_mode = np.zeros(lb)
-                else :
-                    phases_mode = self.peek_phase_offset(block[i_mode],i_mode,trainer)
-                    phases_mode = np.average(phases_mode) * np.ones_like(phases_mode)
-            else:
-                decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended,trainer)
-                phases_mode = self.__select_angles(self.angles,decisions)
+            decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended,trainer)
+            phases_mode = self.__select_angles(self.angles,decisions)
             phases_mode = self.remove_cycle_slips(i_mode, lb, phases_mode)
             phases.append(phases_mode)
             self.phase_collection[i_mode].extend(phases_mode)
