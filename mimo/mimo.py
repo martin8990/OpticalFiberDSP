@@ -10,8 +10,11 @@
 
 import numpy as np
 from mimo.blockdistributer import BlockDistributer
+from mimo.trainer import *
+
 from mimo.error_calculator import *
 from mimo.tap_updater import *
+
 from mimo.compensator import *
 from mimo.phaserecoverer import BlindPhaseSearcher
 
@@ -42,17 +45,15 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
 
 
 def equalize_blockwize(block_distr : BlockDistributer,tap_updater : TapUpdater,error_calculator : MimoErrorCalculator,phaserecoverer = None,widely_linear = False):
-
+    trainer = block_distr.trainer
     nblocks = block_distr.nblocks
     for i_block in range(1,nblocks):
         block_distr.reselect_blocks(i_block)
-        if widely_linear:
-            compensate_widely(block_distr,tap_updater.H)
-        else:
-            compensate(block_distr,tap_updater.H)
+        compensate_widely(block_distr,tap_updater.H)
+       
         if phaserecoverer!=None:
-            phaserecoverer.recover_phase(block_distr)
-        error_calculator.start_error_calculation(block_distr)
+            phaserecoverer.recover_phase(block_distr,trainer)
+        error_calculator.start_error_calculation(block_distr,trainer)
 
         tap_updater.update_taps(block_distr)
         printProgressBar(i_block,block_distr.nblocks)

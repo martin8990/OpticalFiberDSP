@@ -10,7 +10,7 @@
 # lb : blocklength
 
 import numpy as np
-
+from mimo.trainer import Trainer
 def test_inputs(sig : np.ndarray,lb,mu):
     if sig.dtype != np.complex128:
         raise ValueError("Only complex128 input Allowed")
@@ -27,10 +27,12 @@ def test_inputs(sig : np.ndarray,lb,mu):
 # of the mimo. This makes the components cleaner as they dont have to define the ranges on their own .
 # It also contains the block settings, it therefore avoids
 # dataclumps in the code. 
+        
+
 
 class BlockDistributer():
 
-    def __init__(self,sig,lb,ovsmpl,ovconj):
+    def __init__(self,sig,lb,ovsmpl,ovconj,trainer : Trainer):
         self.lb = lb
         self.ovsmpl = ovsmpl
         nmodes = sig.shape[0]
@@ -41,13 +43,14 @@ class BlockDistributer():
         self.sig_compensated = np.zeros(nmodes*nsyms,dtype=np.complex128).reshape(nmodes,nsyms)
         self.nblocks = int(nsyms/lb)
         self.phases = np.zeros((nmodes,lb))
-
+        self.trainer = trainer
+        
     def _get_block_range(self,i_block, lb):
         return np.arange(i_block * lb - lb,i_block * lb)
 
     def _get_double_block_range(self,i_block, lb):
         return np.arange(i_block * lb - lb,i_block * lb + lb)
-           
+
     def insert_compensated_block(self,block_compensated):
         self.block_compensated = block_compensated
         self.sig_compensated[:,self.range_block] = block_compensated
@@ -59,8 +62,8 @@ class BlockDistributer():
         nmodes = sig.shape[0]
         nsamps = sig.shape[1]
         ovsmpl = self.ovsmpl
-        dims = 2
-        shp = (nmodes,ovsmpl,dims,int(nsamps/ovsmpl))
+        ovconj = self.ovconj
+        shp = (nmodes,ovsmpl,ovconj,int(nsamps/ovsmpl))
         sig_separated = np.zeros(shp,dtype=np.complex128)
         for i_ovsmpl in range(ovsmpl):
             for i_input in range(nmodes):
@@ -78,6 +81,7 @@ class BlockDistributer():
         range_double_block = self._get_double_block_range(i_block,lb)
         self.double_block = self.sig_separated[:,:,:,range_double_block]
         self.block = self.sig_separated[:,:,:,range_block]
+        self.trainer.update_block(i_block,range_block)
         double_block_fd = np.zeros_like(self.double_block)
         for i_input in range(double_block_fd.shape[0]):
             for i_ovsmpl in range(double_block_fd.shape[1]):

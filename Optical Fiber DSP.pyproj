@@ -37,6 +37,7 @@
     <Compile Include="EvaluationFunctions\__init__.py" />
     <Compile Include="Impairments\Impairments.py" />
     <Compile Include="Impairments\__init__.py" />
+    <Compile Include="mimo\trainer.py" />
     <Compile Include="mimo\blockdistributer.py" />
     <Compile Include="mimo\compensator.py" />
     <Compile Include="mimo\error_calculator.py" />

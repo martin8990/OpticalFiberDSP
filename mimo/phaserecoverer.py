@@ -1,25 +1,20 @@
 import numpy as np
-from mimo.mimo import BlockDistributer
+from mimo.mimo import BlockDistributer,Trainer
 
 # TODO : Class is to long, should be refactored
 class BlindPhaseSearcher():
-    def __init__(self,block_distr : BlockDistributer,sequence,n_trainingsyms,num_testangles,constellation,len_phase_block,search_area = np.pi/2):
+    def __init__(self,block_distr : BlockDistributer,trainer : Trainer,num_testangles,search_area = np.pi/2):
     
         b = np.arange(num_testangles)
         self.angles = b/num_testangles * search_area
-        self.constellation = constellation
         self.i_block = 0
         self.num_testangles =num_testangles
-        
+        self.lbp = trainer.lbp
         self.sa = search_area
-        self.ntrainingblocks = n_trainingsyms/block_distr.lb
-        self.sequence = sequence
         nmodes = block_distr.nmodes
         nblocks = block_distr.nblocks
-        self.lbp = len_phase_block
-        self.buffer = np.ones((nmodes,len_phase_block*2),dtype = np.complex128) * constellation[0]
+        self.buffer = np.ones((nmodes,trainer.lbp*2),dtype = np.complex128) * trainer.constellation[0]
         
-        self.offset = int(-block_distr.lb/2) - self.lbp
         self.phase_collection = []
         self.slips_up = []
         self.slips_down = []
@@ -42,9 +37,9 @@ class BlindPhaseSearcher():
     def __get_angle_id_with_nearest_distance(self,nearest_dist_per_angle_denoised):
         return nearest_dist_per_angle_denoised.argmin(1)
 
-    def __find_best_decisions(self,i_mode,block_distr,block):
+    def __find_best_decisions(self,i_mode,block_distr : BlockDistributer,block,trainer : Trainer):
         angles = self.angles
-        constellation = self.constellation
+        constellation = trainer.constellation
                     
         sig_rotated = block[:,np.newaxis]*np.exp(1j*angles)
         distances = abs(sig_rotated[:, :, np.newaxis]-constellation)**2
@@ -81,32 +76,34 @@ class BlindPhaseSearcher():
              inert_phases[k] = cur_phase
         return inert_phases
 
-    #def cheat_phase_offset(self,block,i_mode,lb):
-    #    cnt = (self.i_block+1) * lb
-    #    trainingRange = range(cnt + self.offset,cnt + lb + self.offset)
-    #    seq = self.sequence[i_mode,trainingRange]
-    #    angles_sequence = np.arctan2(seq.real,seq.imag)
-    #    angles_block = np.arctan2(block.real,block.imag)
-    #    print(seq - block)
-    #    phases = angles_block - angles_sequence
+    def peek_phase_offset(self,block,i_mode,trainer : Trainer):
         
-    #    return phases
+        seq = trainer.block_sequence[i_mode]
+        angles_sequence = np.arctan2(seq.imag,seq.real)
+        angles_block = np.arctan2(block.imag,block.real)
+        phases = angles_sequence-angles_block
+        
+        return phases
       
 
-    def recover_phase(self,block_distr : BlockDistributer):
+    def recover_phase(self,block_distr : BlockDistributer,trainer: Trainer):
         phases = []
         block = block_distr.block_compensated
         lb = block_distr.lb
-        for i_mode in range(block.shape[0]):
+        lbp = trainer.lbp
 
+        for i_mode in range(block.shape[0]):
             block_appended = np.append(self.buffer[i_mode],block[i_mode])
             self.buffer[i_mode] = block[i_mode,-self.lbp*2:]
             block[i_mode] = block_appended[self.lbp:-self.lbp]
-            if self.i_block < self.ntrainingblocks:
-                phases_mode = np.zeros(lb)
-                #phases_mode = self.cheat_phase_offset(block[i_mode],i_mode,lb)
+            if trainer.in_training:
+                if self.i_block == 0:
+                    phases_mode = np.zeros(lb)
+                else :
+                    phases_mode = self.peek_phase_offset(block[i_mode],i_mode,trainer)
+                    phases_mode = np.average(phases_mode) * np.ones_like(phases_mode)
             else:
-                decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended)
+                decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended,trainer)
                 phases_mode = self.__select_angles(self.angles,decisions)
             phases_mode = self.remove_cycle_slips(i_mode, lb, phases_mode)
             phases.append(phases_mode)
@@ -116,9 +113,8 @@ class BlindPhaseSearcher():
         self.i_block+=1
         block_phaserec = block*np.exp(1j*phases)
         
-      
         block_distr.insert_compensated_block(block_phaserec)
-        block_distr.shift_fd_block(-self.lbp)
+        block_distr.shift_fd_block(-trainer.lbp)
         block_distr.phases = phases
             
 
