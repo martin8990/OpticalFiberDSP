@@ -93,8 +93,11 @@ class BlindPhaseSearcher():
             block_appended = np.append(self.buffer[i_mode],block[i_mode])
             self.buffer[i_mode] = block[i_mode,-self.lbp*2:]
             block[i_mode] = block_appended[self.lbp:-self.lbp]
-            decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended,trainer)
-            phases_mode = self.__select_angles(self.angles,decisions)
+            if trainer.in_training:
+                phases_mode = np.zeros(lb)
+            else:
+                 decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended,trainer)
+                 phases_mode = self.__select_angles(self.angles,decisions)
             phases_mode = self.remove_cycle_slips(i_mode, lb, phases_mode)
             phases.append(phases_mode)
             self.phase_collection[i_mode].extend(phases_mode)

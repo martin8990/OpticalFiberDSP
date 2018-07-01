@@ -9,10 +9,10 @@ import pyqt_mimo.mimoplot as bmp
 import Testing.CaptureLoader as load
 N = 7 *10**4
 
-sequence,sig = load.load_3mode_hard_capture()
+sequence,sig = load.load_3mode_hard_capture_corr()
 corrs = []
 for i_mode in range(sequence.shape[0]):
-    corr = np.correlate(sequence[i_mode],sig[i_mode,1:sequence.shape[1]*2:2],mode = 'full')
+    corr = np.correlate((sequence[i_mode]),sig[i_mode,1:sequence.shape[1]*2:2],mode = 'full')
     corrs.append(corr)
  
 

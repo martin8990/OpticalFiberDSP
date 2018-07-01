@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.mlab as mlab
-
+import cmath as cm
 def calculate_final_error(err : list,limit_lower,limit_upper)-> list:
     list_final_error = []
     
@@ -70,6 +70,45 @@ def calculate_ser(sig,answers,constellation):
     errs = np.count_nonzero(answers - decisions, axis=-1)
     print(errs)
     return np.asarray(errs) / answers.shape[1]
+
+def decode(decisions,map,id_convert):
+
+    bps = len(map[0])      # Bits per symbol 
+    bits = np.zeros((decisions.shape[0],decisions.shape[1],bps))
+    for i_mode in range(decisions.shape[0]):
+        for k in range(decisions.shape[1]):
+
+            mybits = map[id_convert[decisions[i_mode,k]]]
+            for bit in range(len(mybits)):
+                bits[i_mode,k,bit] = mybits[bit]
+    return bits.reshape(decisions.shape[0],decisions.shape[1]*bps)
+            
+def format_list_of_numbers(list):
+    strs = ['{:.2E}'.format(num) for num in list]
+    return strs
+
+def calculate_ser_ber(sig,answers,decodation_map,constellation,id_convert):    
+    decisions = make_decision(sig[:,:],constellation)
+    sym_errs = np.count_nonzero(answers - decisions, axis=-1)
+    print("symbol errors : ",sym_errs)
+    ser = np.asarray(sym_errs) / answers.shape[1]
+    
+    sig_bits = decode(decisions,decodation_map,id_convert)
+    seq_bits = decode(answers,decodation_map,id_convert)
+    
+    bit_errs = np.count_nonzero(sig_bits - seq_bits, axis=-1)
+    print("bit errors : ",bit_errs)
+    ber = np.asarray(bit_errs) / sig_bits.shape[1]
+    return ser,ber
+
+def get_8qam_map(constellation):
+    anglo_const = [np.arctan2(i.imag,i.real) for i in constellation]
+    id_convert = np.argsort(np.asarray(anglo_const))
+    bitmap = [(0,0,0),(1,0,0),(1,0,1),(1,1,1), (1,1,0),(0,1,0),(0,1,1),(0,0,1)]
+    return id_convert,bitmap
+
+
+
 
 def seperate_per_bit(constellation,answers,sig,lb,shift = 0):
     bit_sigs = []

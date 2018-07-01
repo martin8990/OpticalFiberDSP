@@ -18,6 +18,7 @@ class Trainer():
         self.ntraining_syms = ntraining_syms
         self.discover_constellation_and_find_symids()
         
+        
     def update_block(self,i_block,range_block):
         self.block_sequence = self.sequence_synced[:,range_block]
         if i_block>0:
@@ -57,13 +58,20 @@ class Trainer():
         self.constellation = constellation
         self.symids = symids
 
-    def calculate_SER(self,sig):
+    def calculate_ser_ber(self,sig):
         start = self.ntraining_syms
         stop = sig.shape[1] - 10000
+        id_convert,bitmap = eval.get_8qam_map(self.constellation)
         if stop-start < 1000:
             print("Too short for SER")
         else:
-            ser = eval.calculate_ser(sig[:,start:stop],self.symids[:,start:stop],self.constellation)
+            ser,ber = eval.calculate_ser_ber(sig[:,start:stop],self.symids[:,start:stop],bitmap,self.constellation,id_convert)
             print("Calculation Between " ,start," and ", stop)
-            print("SER = ",ser)
+            print("ser = ",eval.format_list_of_numbers(ser))
+            seravg = "{:.2E}".format( np.average(np.asarray(ser)))
+            print("ser_avg = ",seravg)
+            ber_avg = "{:.2E}".format( np.average(np.asarray(ber)))
+            print("ber = ",eval.format_list_of_numbers(ber))
+            print("ber_avg = ",ber_avg)            
+
     
