@@ -13,18 +13,22 @@ class Trainer():
         shift = int(-lb/2) + lbp
         self.sequence_synced = np.roll(sequence,shift,axis=1)
         self.in_training = True
+        self.stop_phaserec = True
         self.lbp = lbp
         self.ntrainingblocks = ntraining_syms/lb 
         self.ntraining_syms = ntraining_syms
         self.discover_constellation_and_find_symids()
-        
+      
         
     def update_block(self,i_block,range_block):
         self.block_sequence = self.sequence_synced[:,range_block]
         if i_block>0:
             self.block_sequence_buffered = self.sequence_synced[:,range_block[0]-self.lbp : range_block[-1]+self.lbp+1]
+        if i_block > self.ntrainingblocks-20:
+            self.stop_phaserec = False
         if i_block>self.ntrainingblocks:
             self.in_training = False
+
     
     def sort_sig_per_sym(self,sig):
         sig_sym = []

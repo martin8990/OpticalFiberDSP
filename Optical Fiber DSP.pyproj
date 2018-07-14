@@ -74,8 +74,11 @@
     <Compile Include="pyqt_mimo\tapsplot.py" />
     <Compile Include="pyqt_mimo\__init__.py" />
     <Compile Include="Testing\Equalizer.py" />
+    <Compile Include="Testing\FourierTransform\FFT_Speedtest.py" />
     <Compile Include="Testing\FourierTransform\GPUFFT.py" />
     <Compile Include="Testing\FourierTransform\FourierTransform.py" />
+    <Compile Include="Testing\FourierTransform\__init__.py" />
+    <Compile Include="Testing\GPUSpeedTests\KernelTest.py" />
     <Compile Include="Testing\SimulationLoader.py" />
     <Compile Include="Testing\Legacy\PlotControllerTest.py" />
     <Compile Include="Testing\Legacy\SignalLoader - Copy.py" />
@@ -111,6 +114,7 @@
     <Folder Include="Testing" />
     <Folder Include="Testing\FourierTransform" />
     <Folder Include="Testing\Legacy" />
+    <Folder Include="Testing\GPUSpeedTests\" />
     <Folder Include="Testing\PandaTest" />
   </ItemGroup>
   <ItemGroup>

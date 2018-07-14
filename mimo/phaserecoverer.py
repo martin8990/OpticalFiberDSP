@@ -3,7 +3,7 @@ from mimo.mimo import BlockDistributer,Trainer
 
 # TODO : Class is to long, should be refactored
 class BlindPhaseSearcher():
-    def __init__(self,block_distr : BlockDistributer,trainer : Trainer,num_testangles,search_area = np.pi/2):
+    def __init__(self,block_distr : BlockDistributer,trainer : Trainer,num_testangles,search_area = np.pi/2,use_training = False):
     
         b = np.arange(num_testangles)
         self.angles = b/num_testangles * search_area
@@ -18,6 +18,7 @@ class BlindPhaseSearcher():
         self.phase_collection = []
         self.slips_up = []
         self.slips_down = []
+        self.use_training = use_training
 
         for i_mode in range(nmodes):
             self.phase_collection.append([0])
@@ -93,7 +94,7 @@ class BlindPhaseSearcher():
             block_appended = np.append(self.buffer[i_mode],block[i_mode])
             self.buffer[i_mode] = block[i_mode,-self.lbp*2:]
             block[i_mode] = block_appended[self.lbp:-self.lbp]
-            if trainer.in_training:
+            if trainer.stop_phaserec and self.use_training == False:
                 phases_mode = np.zeros(lb)
             else:
                  decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended,trainer)

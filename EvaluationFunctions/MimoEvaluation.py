@@ -102,9 +102,12 @@ def calculate_ser_ber(sig,answers,decodation_map,constellation,id_convert):
     return ser,ber
 
 def get_8qam_map(constellation):
-    anglo_const = [np.arctan2(i.imag,i.real) for i in constellation]
+    anglo_const = [np.arctan2(i.real,i.imag) for i in constellation]
     id_convert = np.argsort(np.asarray(anglo_const))
-    bitmap = [(0,0,0),(1,0,0),(1,0,1),(1,1,1), (1,1,0),(0,1,0),(0,1,1),(0,0,1)]
+    print(constellation)
+    print(id_convert)
+    print(anglo_const)
+    bitmap = [(1,1,1),(0,1,1),(1,1,0),(0,1,0), (1,0,0),(0,0,0),(1,0,1),(0,0,1)]
     return id_convert,bitmap
 
 

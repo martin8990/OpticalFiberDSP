@@ -70,3 +70,26 @@ def load_3mode_hard_capture_corr():
     sig = capture['Input'][()].astype(np.complex128)
     sig = sig*8
     return sequence,sig
+
+def load_6mode_easy_capture_corr():
+    capture = sio.loadmat('6M_4.09E-4_21taps.mat', squeeze_me=True)
+    sequence = capture['Sequence'][()].astype(np.complex128)
+    sequence = np.roll(sequence,23790,axis = 1)
+    sequence = np.conj(sequence)
+
+    sig = capture['Input'][()].astype(np.complex128)
+    sig = sig*8
+    return sequence,sig
+
+def load_6mode_easy_capture(N):
+    capture = sio.loadmat('6M_4.09E-4_21taps.mat', squeeze_me=True)
+    sequence = capture['Sequence'][()].astype(np.complex128)
+    sequence = np.roll(sequence,23790,axis = 1)
+    while N > sequence.shape[1]:
+        sequence = np.append(sequence,sequence,axis=1)
+        sequence = sequence[:,:N]
+
+    sig = capture['Input'][()].astype(np.complex128)
+    sig = sig*8
+    sig = sig[:,:N]
+    return sequence,sig

@@ -32,13 +32,13 @@ class InteractiveMimoRow :
 
     
 
-def plot_interactive_mimo(mimo_figures : list,lowerbound,upperbound):
+def plot_interactive_mimo(mimo_figures : list,lowerbound,upperbound,name):
     app = QtGui.QApplication([])
     wins = []
     for ifig,figs in enumerate(mimo_figures):
         wins.append(pg.GraphicsWindow(title="Mimo Plotter"))
         wins[ifig].resize(600 + len(figs) * 300,300 * len(figs))
-        wins[ifig].setWindowTitle('Mimo Plotter')
+        wins[ifig].setWindowTitle(name)
 
         pg.setConfigOptions(antialias=True)
         for figure_row in figs:

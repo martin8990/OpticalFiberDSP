@@ -31,6 +31,24 @@ def __select_angles(angles, decisions):
         chosen_angles[i] = angles[decisions[i]]
     return chosen_angles
 
+def remove_cycle_slips(phases_mode):
+    inert_phases = np.zeros_like(phases_mode)
+    sa = np.pi/2
+    dsa = sa/2
+    counter = 0
+    prev_phase = 0
+    for k,cur_phase in enumerate(phases_mode):
+        cur_phase += sa*counter
+        delta_phase = cur_phase - prev_phase
+        if delta_phase > dsa:
+            counter -= 1
+            cur_phase -= sa
+        elif delta_phase < -dsa:
+            counter += 1
+            cur_phase += sa
+        prev_phase = cur_phase
+        inert_phases[k] = cur_phase
+    return inert_phases
 
 def blind_phase_search(sig, num_testangles, constellation, lb):
    
@@ -39,9 +57,10 @@ def blind_phase_search(sig, num_testangles, constellation, lb):
     phases = []
     for i_mode in range(sig.shape[0]):
         decisions =  __find_best_decisions(sig[i_mode], angles, constellation, lb)
-        phases.append(__select_angles(angles,decisions))        
+        phases_mode =__select_angles(angles,decisions)
+        phases_mode = remove_cycle_slips(phases_mode)
+        phases.append(phases_mode)        
     phases = np.asarray(phases)
-    phases = np.unwrap(phases)
     return sig*np.exp(1.j*phases)
 
 

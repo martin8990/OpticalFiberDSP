@@ -19,7 +19,10 @@ class TapsPlot(MimoFigure):
         self.list_real_taps = []
         self.list_imag_taps = [] 
         for k in range(self.taps.shape[0]):
-            fig = win.addPlot(title= "Mode : " + str(k)+  " -> " +  self.name )
+            if self.taps.shape[0] > 1:
+                fig = win.addPlot(title= "Mode : " + str(k)+  " -> " +  self.name )
+            else :
+                fig = win.addPlot(title= self.name )
             real_taps, imag_taps = self._plot_taps(fig,self.taps[k])
             self.list_real_taps.append(real_taps)
             self.list_imag_taps.append(imag_taps)
