@@ -3,10 +3,7 @@
 import numpy as np
 import EvaluationFunctions.MimoEvaluation as eval
 import matplotlib.mlab as mlab
-# The blockdistibuter exists to provide signal blocks to the components 
-# of the mimo. This makes the components cleaner as they dont have to define the ranges on their own .
-# It also contains the block settings, it therefore avoids
-# dataclumps in the code. 
+
 
 class Trainer():
     def __init__(self,sequence,lb,lbp,ntraining_syms):

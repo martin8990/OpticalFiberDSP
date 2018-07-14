@@ -51,7 +51,6 @@ def equalize(sig,sequence,mu_martin = 1e-3 ,lb = 64,ntraining_syms = 15000,inter
     else:
         sig_martin = mimo.equalize_blockwize(block_distr,tap_updater,widely_linear = widely_linear)
         sig_martin[:,ntraining_syms:] = phaserec.blind_phase_search(sig_martin[:,ntraining_syms:],40,trainer.constellation,10)
-    
 
 
     taps_martin = tap_updater.retrieve_timedomain_taps()

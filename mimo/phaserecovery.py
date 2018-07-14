@@ -1,4 +1,5 @@
 import numpy as np
+import logging as log
 # Timo Pfau et al,
 #  Hardware-Efficient Coherent Digital Receiver Concept With Feedforward Carrier Recovery for M-QAM Constellations
 #  , Journal of Lightwave Technology 27, pp 989-999 (2009)
@@ -50,8 +51,13 @@ def remove_cycle_slips(phases_mode):
         inert_phases[k] = cur_phase
     return inert_phases
 
+
+
 def blind_phase_search(sig, num_testangles, constellation, lb):
-   
+    """
+    Used for external phase recovery, note that internal is ussualy better 
+    """ 
+    log.warn("You are using external phase recovery, note that internal is usually better.")    
     b = np.arange(num_testangles)
     angles = b/num_testangles * np.pi/2
     phases = []

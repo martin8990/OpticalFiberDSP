@@ -1,4 +1,5 @@
 # Author M.C. van Leeuwen (m.c.v.leeuwen@student.tue.nl)
+
 # Last Updated : 25-5-18
 # sig : signal, a numpy ndarray where dim0 represents the channels and dim1 the samples
 # fd : frequency domain
@@ -49,7 +50,7 @@ def equalize_blockwize(block_distr : BlockDistributer,tap_updater : TapUpdater,p
     nblocks = block_distr.nblocks
     for i_block in range(1,nblocks):
         block_distr.reselect_blocks(i_block)
-        compensate_widely(block_distr,tap_updater.H)
+        compensate(block_distr,tap_updater.H)
        
         if phaserecoverer!=None:
             phaserecoverer.recover_phase(block_distr,trainer)

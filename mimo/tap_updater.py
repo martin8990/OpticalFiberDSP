@@ -3,6 +3,7 @@ from mimo.mimo import BlockDistributer
 
 class TapUpdater():
     def save_timedomain_taps(self, H, lb, nmodes, ovsmpl,ovconj):
+        """ For vizualisation purposes""" 
         for i_input in range(nmodes):
             for i_output in range(nmodes):
                 for i_ovsmpl in range(ovsmpl):
@@ -13,6 +14,13 @@ class TapUpdater():
         self.i_block += 1
     
     def __init__(self,mu,block_distr : BlockDistributer):
+        """ 
+        Parameters
+        ----------
+        mu : stepsize, ussually between 3e-3 and 5e-5, 
+        I would recommend using a higher step size for noisy signals while using
+        a higher one for less noise ones.
+        """
         self.mu = mu
         nmodes = block_distr.nmodes
         lb = block_distr.lb
@@ -25,7 +33,7 @@ class TapUpdater():
         for i_output in range(nmodes):
             for i_ovconj in range(ovconj):
                 h[i_output,i_output,0,i_ovconj,CTap] = 1/ovconj + 0j
-                # I decided to leave the inter taps at 0
+                # I decided to leave the odd sampled taps at 0
         for i_input in range(nmodes):
             for i_output in range(nmodes):
                 for i_ovsmpl in range(ovsmpl):
@@ -45,7 +53,7 @@ class TapUpdater():
 
 class FrequencyDomainTapUpdater(TapUpdater):
     def update_taps(self,block_distr : BlockDistributer):
-
+        """Blockwize Frequency domain tap updater after [1]"""
         H = self.H
         nmodes = block_distr.nmodes
         ovsmpl = block_distr.ovsmpl
@@ -55,6 +63,7 @@ class FrequencyDomainTapUpdater(TapUpdater):
         e = block_distr.block_error
         zeros = np.zeros(lb,dtype = np.complex128)
         block_fd = block_distr.double_block_fd
+
         for i_output in range(nmodes):
             E = np.fft.fft(np.append(zeros,e[i_output,:]))
             for i_input in range(nmodes):        
@@ -68,13 +77,15 @@ class FrequencyDomainTapUpdater(TapUpdater):
 
 class TimedomainTapupdater(TapUpdater):
     def update_taps(self,block_distr : BlockDistributer):
-
+        """
+        Time domain tap updater after the Hybrid implementation in [1], unfortunately not functioning as desired
+        """
         h = self.h
         nmodes = block_distr.nmodes
         ovsmpl = block_distr.ovsmpl
         ovconj = block_distr.ovconj
         lb = block_distr.lb
-        mu = 2e-3
+        
         e = block_distr.block_error
         zeros = np.zeros(lb,dtype = np.complex128)
         block = block_distr.double_block[:,:,:,lb:]
@@ -83,8 +94,9 @@ class TimedomainTapupdater(TapUpdater):
             for i_input in range(nmodes):        
                 for i_ovsmpl in range(ovsmpl):
                     for i_ovconj in range(ovconj):
-                        h[i_input,i_output,i_ovsmpl,i_ovconj] += mu * np.conj(block[i_input,i_ovsmpl,i_ovconj]) * e[i_output]
-                        self.H[i_input,i_output,i_ovsmpl,i_ovconj] = np.fft.fft(np.append(h[i_input,i_output,i_ovsmpl,i_ovconj],zeros))
+                        shape_H = (i_input,i_output,i_ovsmpl,i_ovconj) 
+                        h[shape_H] += mu * np.conj(block[i_input,i_ovsmpl,i_ovconj]) * e[i_output]
+                        self.H[shape_H] = np.fft.fft(np.append(h[shape_H],zeros))
         self.h = h
         self.save_timedomain_taps(self.H, lb, nmodes, ovsmpl,ovconj)
 
