@@ -44,7 +44,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
 # 
 
 
-def equalize_blockwize(block_distr : BlockDistributer,tap_updater : TapUpdater,error_calculator : MimoErrorCalculator,phaserecoverer = None,widely_linear = False):
+def equalize_blockwize(block_distr : BlockDistributer,tap_updater : TapUpdater,phaserecoverer = None,widely_linear = False):
     trainer = block_distr.trainer
     nblocks = block_distr.nblocks
     for i_block in range(1,nblocks):
@@ -53,6 +53,8 @@ def equalize_blockwize(block_distr : BlockDistributer,tap_updater : TapUpdater,e
        
         if phaserecoverer!=None:
             phaserecoverer.recover_phase(block_distr,trainer)
+        
+        error_calculator = trainer.get_error_calculator(block_distr)
         error_calculator.start_error_calculation(block_distr,trainer)
 
         tap_updater.update_taps(block_distr)

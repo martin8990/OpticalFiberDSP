@@ -141,8 +141,6 @@ def derive_constellation_and_answers(sequence):
     return constellation,answers
 
 def AddTrainingLoops(sig,sequence,ovsmpl,nloops,syms_per_loop):
-    
-     
     for i_loop in range(nloops):
         sig = np.append(sig[:,:syms_per_loop*ovsmpl],sig,axis = 1)
         sequence = np.append(sequence[:,:syms_per_loop],sequence,axis = 1)

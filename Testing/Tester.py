@@ -21,22 +21,22 @@ from qampy import signals, equalisation
 #sequence,sig = load.load_easiest_capture(N)
 #eq.equalize(sig,sequence,2e-4,64,50000,True,True,False,equalizer='AOLMS')
 
-#N = 20 *10**4
-#sequence,sig = load.load_easiest_capture(N)
-#eq.equalize(sig,sequence,28e-5,64,50000,True,True,False,equalizer='MRD',showplots =True)
+N = 4 *10**4
+sequence,sig = load.load_easiest_capture(N)
+eq.equalize(sig,sequence,28e-5,64,10000,True,True,False,equalizer='SBD',showplots =True)
 
 
 # Harder capture
-N = 20 *10**4
-sequence,sig = load.load_harder_capture(N)
-eq.equalize(sig,sequence,4e-4,32,50000,True,True,False,equalizer='LMS')
+#N = 20 *10**4
+#sequence,sig = load.load_harder_capture(N)
+#eq.equalize(sig,sequence,4e-4,32,50000,True,True,False,equalizer='LMS')
 
 #N = 20 *10**4
 #sequence,sig = load.load_harder_capture(N)
-eq.equalize(sig,sequence,4e-4,32,50000,True,True,False,equalizer='SBD')
+#eq.equalize(sig,sequence,4e-4,32,50000,True,True,False,equalizer='SBD')
 #N = 20 *10**4
 #sequence,sig = load.load_harder_capture(N)
-eq.equalize(sig,sequence,5e-4,32,50000,True,True,False,equalizer='MRD')
+#eq.equalize(sig,sequence,5e-4,32,50000,True,True,False,equalizer='MRD')
 
 
 # 3Mode Capture

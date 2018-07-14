@@ -24,6 +24,7 @@ def equalize(sig,sequence,mu_martin = 1e-3 ,lb = 64,ntraining_syms = 15000,inter
         ovconj = 2
     
     trainer = mimo.Trainer(sequence,lb,lbp,ntraining_syms)
+    sig = trainer.AddTrainingLoop(sig,ovsmpl)
     block_distr = mimo.BlockDistributer(sig,lb,ovsmpl,ovconj,trainer)
     if hybrid:
         tap_updater = mimo.TimedomainTapupdater(mu_martin,block_distr)
@@ -42,17 +43,19 @@ def equalize(sig,sequence,mu_martin = 1e-3 ,lb = 64,ntraining_syms = 15000,inter
         print("Using LMS")
         errorcalc = mimo.TrainedLMS(block_distr)
 
+    trainer.set_errorcalcs([mimo.TrainedLMS(block_distr),mimo.TrainedSBD(block_distr),mimo.TrainedMRD(block_distr)])
+    trainer.discover_constellation_and_find_symids()
     if internal_phaserec:
         phase_recoverer = mimo.BlindPhaseSearcher(block_distr,trainer,40,use_training=train_phaserec)
-        sig_martin = mimo.equalize_blockwize(block_distr,tap_updater,errorcalc,phase_recoverer,widely_linear)
+        sig_martin = mimo.equalize_blockwize(block_distr,tap_updater,phase_recoverer,widely_linear)
     else:
-        sig_martin = mimo.equalize_blockwize(block_distr,tap_updater,errorcalc,widely_linear = widely_linear)
+        sig_martin = mimo.equalize_blockwize(block_distr,tap_updater,widely_linear = widely_linear)
         sig_martin[:,ntraining_syms:] = phaserec.blind_phase_search(sig_martin[:,ntraining_syms:],40,trainer.constellation,10)
     
 
 
     taps_martin = tap_updater.retrieve_timedomain_taps()
-    err_martin = errorcalc.retrieve_error()
+    err_martin = trainer.retrieve_error()
     sig_sym = trainer.sort_sig_per_sym(sig_martin)
     
     trainer.calculate_ser_ber(sig_martin)
@@ -74,7 +77,7 @@ def equalize(sig,sequence,mu_martin = 1e-3 ,lb = 64,ntraining_syms = 15000,inter
             if False:
                 row_figs.append(bmp.ConvergencePlot(err_martin[i_mode],name,ntrainingsyms=ntraining_syms,phase=phase[i_mode],slipups=slips_up[i_mode], slipdowns= slips_down[i_mode]))
             else :
-                row_figs.append(bmp.ConvergencePlot(err_martin[i_mode],name,ntrainingsyms=ntraining_syms))
+                row_figs.append(bmp.ConvergencePlot(err_martin[i_mode],name,ntrainingsyms=ntraining_syms,nloops = trainer.nloops-1))
             row_figs.append(bmp.ConstellationPlot(sig_sym[i_mode],N,name))
             if widely_linear:
                 if taps_martin.shape[0] < 3:

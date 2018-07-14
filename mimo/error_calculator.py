@@ -17,18 +17,18 @@ class MimoErrorCalculator():
         lb = block_distr.lb
         nblocks = block_distr.nblocks
         self.error = np.zeros((nmodes , lb *nblocks),dtype=np.complex128)
-        self.i_block = 0
+    
         self.nmodes = block_distr.nmodes
         self.comp_pr = True
 
     def start_error_calculation(self,block_distr : BlockDistributer,trainer : Trainer):
         block = block_distr.block_compensated
+        i_block = block_distr.i_block
         err = self.calculate_error(block,trainer)
         if self.comp_pr:
             err = err*np.exp(1.j*-block_distr.phases)
         block_distr.insert_block_error(err)
-        self.error[:,self.i_block*block_distr.lb:(self.i_block+1)*block_distr.lb] = err
-        self.i_block+=1
+        self.error[:,i_block*block_distr.lb:(i_block+1)*block_distr.lb] = err
     
     def calculate_error(self,block) -> np.ndarray:
         raise ValueError('please select one of the errorCalculators that derives from this class')

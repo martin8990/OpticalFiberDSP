@@ -2,7 +2,7 @@
 # Author M.C. van Leeuwen (m.c.v.leeuwen@student.tue.nl)
 import numpy as np
 import EvaluationFunctions.MimoEvaluation as eval
-
+import matplotlib.mlab as mlab
 # The blockdistibuter exists to provide signal blocks to the components 
 # of the mimo. This makes the components cleaner as they dont have to define the ranges on their own .
 # It also contains the block settings, it therefore avoids
@@ -17,7 +17,9 @@ class Trainer():
         self.lbp = lbp
         self.ntrainingblocks = ntraining_syms/lb 
         self.ntraining_syms = ntraining_syms
-        self.discover_constellation_and_find_symids()
+       
+        self.nloops = 1        
+        self.i_errorcalc = 0
       
         
     def update_block(self,i_block,range_block):
@@ -26,10 +28,28 @@ class Trainer():
             self.block_sequence_buffered = self.sequence_synced[:,range_block[0]-self.lbp : range_block[-1]+self.lbp+1]
         if i_block > self.ntrainingblocks-20:
             self.stop_phaserec = False
-        if i_block>self.ntrainingblocks:
-            self.in_training = False
+        if self.in_training and i_block>self.ntrainingblocks * (self.i_errorcalc+1):
+            self.i_errorcalc+=1
+            if self.nloops == self.i_errorcalc :
+                self.in_training = False                            
 
-    
+    def get_error_calculator(self,block_distr):
+        return self.errorcalcs[self.i_errorcalc]
+    def retrieve_error(self):
+        error = self.errorcalcs[0].error
+        for ecalc in self.errorcalcs:
+            for i_mode in range(error.shape[0]):
+                error[i_mode] = np.maximum(abs(ecalc.error[i_mode]),abs(error[i_mode]))
+
+        err_Averaged = []
+        movavg_taps = 1000
+        for i_mode in range(error.shape[0]):
+            err_Averaged.append(mlab.movavg(error[i_mode],movavg_taps))
+        return err_Averaged
+        
+
+        
+    ## Used for making colored plots
     def sort_sig_per_sym(self,sig):
         sig_sym = []
         ctl = self.constellation
@@ -48,6 +68,16 @@ class Trainer():
             sig_sym.append(sig_sym_mode_arr)
         return sig_sym
 
+          
+       
+    def AddTrainingLoop(self,sig,ovsmpl):
+        seq = self.sequence_synced
+        nsyms = self.ntraining_syms
+        self.sequence_synced = np.append(seq[:,:nsyms],seq,axis = 1)
+        self.nloops+=1
+        return np.append(sig[:,:nsyms*ovsmpl],sig,axis = 1)
+        
+
     def discover_constellation_and_find_symids(self):
         constellation = []
         seq = self.sequence_synced
@@ -62,8 +92,13 @@ class Trainer():
         self.constellation = constellation
         self.symids = symids
 
+    def set_errorcalcs(self,errorcalcs : list):
+        self.errorcalcs = errorcalcs
+        if len(errorcalcs) != self.nloops+1 :
+            raise ValueError("Need ",self.nloops," gotten ", len(errorcalcs) , " errorcalculators" )
+
     def calculate_ser_ber(self,sig):
-        start = self.ntraining_syms
+        start = self.ntraining_syms * self.nloops
         stop = sig.shape[1] - 10000
         id_convert,bitmap = eval.get_8qam_map(self.constellation)
         if stop-start < 1000:
@@ -76,6 +111,4 @@ class Trainer():
             print("ser_avg = ",seravg)
             ber_avg = "{:.2E}".format( np.average(np.asarray(ber)))
             print("ber = ",eval.format_list_of_numbers(ber))
-            print("ber_avg = ",ber_avg)            
-
-    
+            print("ber_avg = ",ber_avg)
