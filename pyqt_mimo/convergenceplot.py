@@ -23,8 +23,8 @@ class ConvergencePlot(MimoFigure):
            ids = (np.arange(self.nloops + 1)+1) * self.ntrainingsyms
            for k in range(ids.shape[0]):
                ids[k] = min(ids[k],len(self.error)-1)
-
-           train_plt=  self.fig.plot(ids,self.error[ids],pen=None, symbol='star', name = 'training_stop')
+               
+           train_plt=  self.fig.plot(ids,self.error[ids],pen=None, symbol='star', name = 'training_stop',symbolSize=14)
       
        if self.phase[0]!=999:
            phase_plt = self.fig.plot(self.phase,pen = (0,255,0,255), name = 'phase')

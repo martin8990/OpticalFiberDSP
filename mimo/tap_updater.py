@@ -1,6 +1,7 @@
 import numpy as np
 from mimo.mimo import BlockDistributer
 
+
 class TapUpdater():
     def save_timedomain_taps(self, H, lb, nmodes, ovsmpl,ovconj):
         """ For vizualisation purposes""" 
@@ -89,7 +90,6 @@ class TimedomainTapupdater(TapUpdater):
         e = block_distr.block_error
         zeros = np.zeros(lb,dtype = np.complex128)
         block = block_distr.double_block[:,:,:,lb:]
-        #print(block.shape)
         for i_output in range(nmodes):
             for i_input in range(nmodes):        
                 for i_ovsmpl in range(ovsmpl):

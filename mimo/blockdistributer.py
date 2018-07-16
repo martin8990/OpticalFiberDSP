@@ -54,7 +54,7 @@ class BlockDistributer():
         for i_ovsmpl in range(ovsmpl):
             for i_input in range(nmodes):
                 sig_separated[i_input,i_ovsmpl,0] = sig[i_input,range(i_ovsmpl,nsamps,ovsmpl)]
-                if self.ovconj>1:
+                if ovconj>1:
                     sig_separated[i_input,i_ovsmpl,1] = np.conj(sig_separated[i_input,i_ovsmpl,0])
         return sig_separated
 
@@ -73,7 +73,7 @@ class BlockDistributer():
         double_block_fd = np.zeros_like(self.double_block)
         for i_input in range(double_block_fd.shape[0]):
             for i_ovsmpl in range(double_block_fd.shape[1]):
-                for i_ovconj in range(ovconj):
+                for i_ovconj in range(double_block_fd.shape[2]):
                     double_block_fd[i_input,i_ovsmpl,i_ovconj] = np.fft.fft(self.double_block[i_input,i_ovsmpl,i_ovconj])
         
         self.double_block_fd = double_block_fd

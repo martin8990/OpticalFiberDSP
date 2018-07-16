@@ -121,10 +121,8 @@ class TrainedMRD(MimoErrorCalculator):
         e = yr*(ar**2 - yr**2) + 1j * yi *(ai**2-yi**2)
         return e
     def calculate_error(self,block,trainer : Trainer):
-        
         if trainer.in_training:
-            return trainer.block_sequence-block
-
+            return self.calc_e_mrd(trainer.block_sequence,block)
         else :
             best_decision = np.argmin(np.abs( trainer.constellation-block[:,:,np.newaxis]),axis=2) 
             best_sym = np.zeros_like(block)

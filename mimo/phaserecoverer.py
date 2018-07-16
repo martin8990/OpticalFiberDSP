@@ -43,13 +43,9 @@ class BlindPhaseSearcher():
         constellation = trainer.constellation
                     
         sig_rotated = block[:,np.newaxis]*np.exp(1j*angles)
-        if trainer.in_training and block_distr.i_block>1:
-            nearest_dist_per_angle = np.zeros_like(sig_rotated)
-            for i_angle in range(angles.shape[0]):
-                nearest_dist_per_angle[:,i_angle] = abs(sig_rotated[:,i_angle] - trainer.block_sequence_buffered[i_mode])**2
-        else:
-            distances = abs(sig_rotated[:, :, np.newaxis]-constellation)**2
-            nearest_dist_per_angle = distances.min(axis=2)
+        
+        distances = abs(sig_rotated[:, :, np.newaxis]-constellation)**2
+        nearest_dist_per_angle = distances.min(axis=2)
         nearest_dist_per_angle_denoised = self.__denoise(nearest_dist_per_angle)
         
         decisions = self.__get_angle_id_with_nearest_distance(nearest_dist_per_angle_denoised)

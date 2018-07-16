@@ -1,29 +1,43 @@
 
 # Author M.C. van Leeuwen (m.c.v.leeuwen@student.tue.nl)
 import numpy as np
-import EvaluationFunctions.MimoEvaluation as eval
+import utility.evaluation as eval
 import matplotlib.mlab as mlab
 
-
+# Handles provides training symbol
 class Trainer():
-    def __init__(self,sequence,lb,lbp,ntraining_syms):
+    def __init__(self,sequence : np.ndarray,lb,lbp,ntraining_syms,phaserec_start):
+        """
+        Parameters
+        ----------
+        Sequence : Transmitted symbols complementary to the signal
+        lb : blocksize of the equalizer
+        lbp : block size of the internal phase recovery
+        ntraining_syms : symbols per training loop
+        """
+        
         shift = int(-lb/2) + lbp
-        self.sequence_synced = np.roll(sequence,shift,axis=1)
+        self.sequence_synced = np.roll(sequence,shift,axis=1)  
+        
         self.in_training = True
         self.stop_phaserec = True
+        
         self.lbp = lbp
         self.ntrainingblocks = ntraining_syms/lb 
         self.ntraining_syms = ntraining_syms
-       
+        self.i_block_pr_start = phaserec_start/lb
         self.nloops = 1        
         self.i_errorcalc = 0
       
         
     def update_block(self,i_block,range_block):
+        """
+        
+        """
         self.block_sequence = self.sequence_synced[:,range_block]
-        if i_block>0:
-            self.block_sequence_buffered = self.sequence_synced[:,range_block[0]-self.lbp : range_block[-1]+self.lbp+1]
-        if i_block > self.ntrainingblocks-20:
+        #if i_block>0:
+        #    self.block_sequence_buffered = self.sequence_synced[:,range_block[0]-self.lbp : range_block[-1]+self.lbp+1]
+        if i_block > self.i_block_pr_start:
             self.stop_phaserec = False
         if self.in_training and i_block>self.ntrainingblocks * (self.i_errorcalc+1):
             self.i_errorcalc+=1
@@ -43,8 +57,6 @@ class Trainer():
         for i_mode in range(error.shape[0]):
             err_Averaged.append(mlab.movavg(error[i_mode],movavg_taps))
         return err_Averaged
-        
-
         
     ## Used for making colored plots
     def sort_sig_per_sym(self,sig):
@@ -72,6 +84,7 @@ class Trainer():
         nsyms = self.ntraining_syms
         self.sequence_synced = np.append(seq[:,:nsyms],seq,axis = 1)
         self.nloops+=1
+        print(nsyms)
         return np.append(sig[:,:nsyms*ovsmpl],sig,axis = 1)
         
 
@@ -92,7 +105,7 @@ class Trainer():
     def set_errorcalcs(self,errorcalcs : list):
         self.errorcalcs = errorcalcs
         if len(errorcalcs) != self.nloops+1 :
-            raise ValueError("Need ",self.nloops," gotten ", len(errorcalcs) , " errorcalculators" )
+            raise ValueError("Need " + str(self.nloops+1)  + "but received " + str( len(errorcalcs)) + " errorcalculators" )
 
     def calculate_ser_ber(self,sig):
         start = self.ntraining_syms * self.nloops
@@ -101,11 +114,12 @@ class Trainer():
         if stop-start < 1000:
             print("Too short for SER")
         else:
-            ser,ber = eval.calculate_ser_ber(sig[:,start:stop],self.symids[:,start:stop],bitmap,self.constellation,id_convert)
+            ser = eval.calculate_ser(sig[:,start:stop],self.symids[:,start:stop],self.constellation)
+            #ser,ber = eval.calculate_ser_ber(sig[:,start:stop],self.symids[:,start:stop],bitmap,self.constellation,id_convert)
             print("Calculation Between " ,start," and ", stop)
             print("ser = ",eval.format_list_of_numbers(ser))
             seravg = "{:.2E}".format( np.average(np.asarray(ser)))
             print("ser_avg = ",seravg)
-            ber_avg = "{:.2E}".format( np.average(np.asarray(ber)))
-            print("ber = ",eval.format_list_of_numbers(ber))
-            print("ber_avg = ",ber_avg)
+            #ber_avg = "{:.2E}".format( np.average(np.asarray(ber)))
+            #print("ber = ",eval.format_list_of_numbers(ber))
+            #print("ber_avg = ",ber_avg)

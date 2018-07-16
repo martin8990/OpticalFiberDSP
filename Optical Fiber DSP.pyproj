@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{58a347be-2db0-4756-b8e0-a8f1353af3d6}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>Testing\Tester.py</StartupFile>
+    <StartupFile>examples\tester.py</StartupFile>
     <SearchPath>pyqt_mimo</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -19,24 +19,23 @@
     <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="2OversampledTaps.txt" />
     <Content Include="mimo\Legacy\21LBDyn.png" />
     <Content Include="mimo\Legacy\401LBDyn.png" />
     <Content Include="Results\Heatmap.png" />
-    <Content Include="Results\LB_Comparison\Hihger.png" />
     <Content Include="Results\LB_Comparison\Lower.png" />
     <Content Include="Results\LB_Comparison\Settings.txt" />
     <Content Include="Results\Long.png" />
     <Content Include="Results\NanoSecondPMD\NanosecondPMD.png" />
     <Content Include="Results\NanoSecondPMD\Settings.txt" />
     <Content Include="Results\Settings.txt" />
-    <Content Include="sig.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EvaluationFunctions\MimoEvaluation.py" />
-    <Compile Include="EvaluationFunctions\__init__.py" />
-    <Compile Include="Impairments\Impairments.py" />
-    <Compile Include="Impairments\__init__.py" />
+    <Compile Include="examples\settings.py" />
+    <Compile Include="utility\cmd.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="utility\evaluation.py" />
+    <Compile Include="utility\impairments.py" />
     <Compile Include="mimo\trainer.py" />
     <Compile Include="mimo\blockdistributer.py" />
     <Compile Include="mimo\compensator.py" />
@@ -56,14 +55,6 @@
     <Compile Include="mimo\tap_updater.py" />
     <Compile Include="mimo\Tests\mimoTests.py" />
     <Compile Include="mimo\__init__.py" />
-    <Compile Include="PlotFunctions\HeatMap.py" />
-    <Compile Include="PlotFunctions\Legacy\pyqt_bitmimoplot.py" />
-    <Compile Include="PlotFunctions\MPLMimoPlots.py" />
-    <Compile Include="PlotFunctions\PyQtConvergencePlot.py" />
-    <Compile Include="PlotFunctions\PyQtHeatmap - Copy.py" />
-    <Compile Include="PlotFunctions\PyQtHeatmap.py" />
-    <Compile Include="PlotFunctions\pyqt_bitmimoplot.py" />
-    <Compile Include="PlotFunctions\__init__.py" />
     <Compile Include="pyqt_mimo\constellationplot.py" />
     <Compile Include="pyqt_mimo\convergenceplot.py" />
     <Compile Include="pyqt_mimo\mimofigure.py" />
@@ -73,49 +64,43 @@
     <Compile Include="pyqt_mimo\pyqt_mimo_app\__init__.py" />
     <Compile Include="pyqt_mimo\tapsplot.py" />
     <Compile Include="pyqt_mimo\__init__.py" />
-    <Compile Include="Testing\Equalizer.py" />
-    <Compile Include="Testing\FourierTransform\FFT_Speedtest.py" />
-    <Compile Include="Testing\FourierTransform\GPUFFT.py" />
-    <Compile Include="Testing\FourierTransform\FourierTransform.py" />
-    <Compile Include="Testing\FourierTransform\__init__.py" />
-    <Compile Include="Testing\GPUSpeedTests\KernelTest.py" />
-    <Compile Include="Testing\SimulationLoader.py" />
-    <Compile Include="Testing\Legacy\PlotControllerTest.py" />
-    <Compile Include="Testing\Legacy\SignalLoader - Copy.py" />
-    <Compile Include="Testing\CaptureTester.py" />
-    <Compile Include="Testing\Tester.py" />
-    <Compile Include="Testing\Legacy\AutoTest LMS.py" />
-    <Compile Include="Testing\Legacy\AutoTest.py" />
-    <Compile Include="Testing\Legacy\AutoTestResample.py" />
-    <Compile Include="Testing\Legacy\CompareData.py" />
-    <Compile Include="Testing\Legacy\CSVAutoTest.py" />
-    <Compile Include="Testing\Legacy\DelayAfterTestPyQtGraph.py" />
-    <Compile Include="Testing\PandaTest\AutoTest.py" />
-    <Compile Include="Testing\PandaTest\DirectoryCreator.py" />
-    <Compile Include="Testing\PandaTest\MimoRunner.py" />
-    <Compile Include="Testing\PandaTest\PandaManager.py" />
-    <Compile Include="Testing\PandaTest\SignalCreator.py" />
-    <Compile Include="Testing\CaptureLoader.py" />
-    <Compile Include="Testing\__init__.py" />
+    <Compile Include="examples\equalizer.py" />
+    <Compile Include="examples\Legacy\FourierTransform\FFT_Speedtest.py" />
+    <Compile Include="examples\Legacy\FourierTransform\GPUFFT.py" />
+    <Compile Include="examples\Legacy\FourierTransform\FourierTransform.py" />
+    <Compile Include="examples\Legacy\FourierTransform\__init__.py" />
+    <Compile Include="examples\Legacy\GPUSpeedTests\KernelTest.py" />
+    <Compile Include="examples\simulation_loader.py" />
+    <Compile Include="examples\Legacy\PlotControllerTest.py" />
+    <Compile Include="examples\Legacy\SignalLoader - Copy.py" />
+    <Compile Include="examples\capture_tester.py" />
+    <Compile Include="examples\tester.py" />
+    <Compile Include="examples\Legacy\AutoTest LMS.py" />
+    <Compile Include="examples\Legacy\AutoTest.py" />
+    <Compile Include="examples\Legacy\AutoTestResample.py" />
+    <Compile Include="examples\Legacy\CompareData.py" />
+    <Compile Include="examples\Legacy\CSVAutoTest.py" />
+    <Compile Include="examples\Legacy\DelayAfterTestPyQtGraph.py" />
+    <Compile Include="examples\capture_loader.py" />
+    <Compile Include="examples\__init__.py" />
+    <Compile Include="utility\__init__.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="EvaluationFunctions" />
-    <Folder Include="Impairments" />
+    <Folder Include="pyqt_mimo\pyqt_mimo_app\" />
+    <Folder Include="utility\" />
     <Folder Include="mimo" />
     <Folder Include="mimo\Legacy" />
     <Folder Include="mimo\Tests" />
-    <Folder Include="PlotFunctions" />
-    <Folder Include="PlotFunctions\Legacy" />
     <Folder Include="pyqt_mimo\" />
-    <Folder Include="pyqt_mimo\pyqt_mimo_app\" />
+    <Folder Include="examples\Legacy\pyqt_mimo_app\" />
     <Folder Include="Results" />
     <Folder Include="Results\LB_Comparison" />
     <Folder Include="Results\NanoSecondPMD" />
-    <Folder Include="Testing" />
-    <Folder Include="Testing\FourierTransform" />
-    <Folder Include="Testing\Legacy" />
-    <Folder Include="Testing\GPUSpeedTests\" />
-    <Folder Include="Testing\PandaTest" />
+    <Folder Include="examples\" />
+    <Folder Include="examples\Legacy\FourierTransform\" />
+    <Folder Include="examples\Legacy\" />
+    <Folder Include="examples\Legacy\GPUSpeedTests\" />
+    <Folder Include="examples\Legacy\PandaTest\" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|ContinuumAnalytics|Anaconda36-64" />
