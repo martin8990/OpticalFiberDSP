@@ -48,7 +48,7 @@ def equalize(sig,sequence,mimo_set: set.MimoSettings,u_set: set.UpdateSettings,p
             ecalc = mimo.CMAErrorCalculator(block_distr)
         errorcalcs.append(ecalc)
     trainer.set_errorcalcs(errorcalcs)
-    trainer.discover_constellation_and_find_symids()
+    trainer.discover_constellation_and_find_symindexes()
 
     # Equalization
      

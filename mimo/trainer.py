@@ -4,7 +4,7 @@ import numpy as np
 import utility.evaluation as eval
 import matplotlib.mlab as mlab
 
-# Handles provides training symbol
+# Provides training symbols
 class Trainer():
     def __init__(self,sequence : np.ndarray,lb,lbp,ntraining_syms,phaserec_start):
         """
@@ -88,17 +88,13 @@ class Trainer():
         return np.append(sig[:,:nsyms*ovsmpl],sig,axis = 1)
         
 
-    def discover_constellation_and_find_symids(self):
-        constellation = []
+    def discover_constellation_and_find_symindexes(self):
+       
         seq = self.sequence_synced
         symids = np.zeros(seq.shape,dtype = int)
-        for i_mode in range(seq.shape[0]):
-            for k in range(seq.shape[1]):
-                sym = seq[i_mode,k]
-                if sym not in constellation:
-                    constellation.append(sym)
-                symids[i_mode,k] = constellation.index(sym)
-
+        for i_mode in range(seq.shape[0]): # cannot be vectorized further
+            constellation,symids[i_mode] = np.unique(seq[i_mode],return_inverse=True) 
+        print(constellation)
         self.constellation = constellation
         self.symids = symids
 
@@ -110,16 +106,22 @@ class Trainer():
     def calculate_ser_ber(self,sig):
         start = self.ntraining_syms * self.nloops
         stop = sig.shape[1] - 10000
-        id_convert,bitmap = eval.get_8qam_map(self.constellation)
+        constellation = self.constellation
         if stop-start < 1000:
             print("Too short for SER")
         else:
-            ser = eval.calculate_ser(sig[:,start:stop],self.symids[:,start:stop],self.constellation)
-            #ser,ber = eval.calculate_ser_ber(sig[:,start:stop],self.symids[:,start:stop],bitmap,self.constellation,id_convert)
+            symids = self.symids[:,start:stop]
+            decisions = eval.make_decisions(sig[:,start:stop],constellation)
+            ser = eval.calculate_ser(decisions,symids)
             print("Calculation Between " ,start," and ", stop)
             print("ser = ",eval.format_list_of_numbers(ser))
             seravg = "{:.2E}".format( np.average(np.asarray(ser)))
             print("ser_avg = ",seravg)
-            #ber_avg = "{:.2E}".format( np.average(np.asarray(ber)))
-            #print("ber = ",eval.format_list_of_numbers(ber))
-            #print("ber_avg = ",ber_avg)
+            
+            if len(constellation) == 8: # 8QAM
+                bitmap = eval.get_8qam_map(constellation)
+                print(len(bitmap))
+                ber = eval.calculate_ber(decisions,symids,bitmap)
+                ber_avg = "{:.2E}".format( np.average(np.asarray(ber)))
+                print("ber = ",eval.format_list_of_numbers(ber))
+                print("ber_avg = ",ber_avg)

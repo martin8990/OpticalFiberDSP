@@ -62,16 +62,19 @@ class FrequencyDomainTapUpdater(TapUpdater):
         lb = block_distr.lb
         mu = self.mu
         e = block_distr.block_error
-        zeros = np.zeros(lb,dtype = np.complex128)
         block_fd = block_distr.double_block_fd
-
+               
+        _e = np.append(np.zeros_like(e),e,axis = 1)
+        E = np.fft.fft(_e)
+        block_fd_conj = np.conj(block_fd)
+        zeros = np.zeros((lb),dtype = np.complex128)
+        
         for i_output in range(nmodes):
-            E = np.fft.fft(np.append(zeros,e[i_output,:]))
             for i_input in range(nmodes):        
-                for i_ovsmpl in range(ovsmpl):
-                    for i_ovconj in range(ovconj):
-                        s_ = np.fft.ifft(np.conj(block_fd[i_input,i_ovsmpl,i_ovconj]) * E)[:lb]
-                        H[i_input,i_output,i_ovsmpl,i_ovconj] += mu * np.fft.fft(np.append(s_,zeros))
+                s = np.fft.ifft(block_fd_conj[i_input] * E[i_output])[:,:,:lb]
+                s_ = np.append(s,np.zeros_like(s),axis = -1)
+                H[i_input,i_output] += mu * np.fft.fft(s_)
+        
         self.H = H
         self.save_timedomain_taps(H, lb, nmodes, ovsmpl,ovconj)
 

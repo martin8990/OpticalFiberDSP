@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="examples\options.py" />
+    <Compile Include="examples\settings_3mode_hard.py" />
     <Compile Include="examples\settings_QAM.py" />
     <Compile Include="examples\settings.py" />
     <Compile Include="mpl_plots\__init__.py" />

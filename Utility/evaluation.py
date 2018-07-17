@@ -20,14 +20,11 @@ def calculate_convergence(err : list,final_error) -> list:
         list_convergence.append(k)
     return list_convergence
 
-    ber = np.asarray(bit_errs) / sig_bits.shape[1]
-    return ser,ber
 
 def get_8qam_map(constellation):
-    anglo_const = [np.arctan2(i.real,i.imag) for i in constellation]
-    id_convert = np.argsort(np.asarray(anglo_const))
-    bitmap = [(1,1,1),(0,1,1),(1,1,0),(0,1,0), (1,0,0),(0,0,0),(1,0,1),(0,0,1)]
-    return id_convert,bitmap
+
+    bitmap = [(1,1,1),(1,1,0),(0,1,1),(0,0,1), (0,1,0),(0,0,0),(1,0,1),(1,0,0)]
+    return bitmap
 
 
 
@@ -66,27 +63,25 @@ def AddTrainingLoops(sig,sequence,ovsmpl,nloops,syms_per_loop):
 
     return sequence,sig
 
-def make_decision(sig,constellation):
+def make_decisions(sig,constellation):
     dists = (np.abs(sig[:,:,np.newaxis] - constellation))**2    
     decisions = dists.argmin(axis = 2)
     return decisions
-    
-            
+           
 
-def calculate_ser(sig,answers,constellation):    
-    decisions = make_decision(sig[:,:],constellation)
-    errs = np.count_nonzero(answers - decisions, axis=-1)
-    print(errs)
-    return np.asarray(errs) / answers.shape[1]
+def calculate_ser(decisions,symids):    
+    errs = np.count_nonzero(symids - decisions, axis=-1)
+    print("symbol errors : ",errs)
 
-def decode(decisions,map,id_convert):
+    return np.asarray(errs) / symids.shape[1]
+
+def decode(decisions,map):
 
     bps = len(map[0])      # Bits per symbol 
     bits = np.zeros((decisions.shape[0],decisions.shape[1],bps))
     for i_mode in range(decisions.shape[0]):
         for k in range(decisions.shape[1]):
-
-            mybits = map[id_convert[decisions[i_mode,k]]]
+            mybits = map[decisions[i_mode,k]]
             for bit in range(len(mybits)):
                 bits[i_mode,k,bit] = mybits[bit]
     return bits.reshape(decisions.shape[0],decisions.shape[1]*bps)
@@ -95,16 +90,12 @@ def format_list_of_numbers(list):
     strs = ['{:.2E}'.format(num) for num in list]
     return strs
 
-def calculate_ser_ber(sig,answers,decodation_map,constellation,id_convert):    
-    decisions = make_decision(sig[:,:],constellation)
-    sym_errs = np.count_nonzero(answers - decisions, axis=-1)
-    print("symbol errors : ",sym_errs)
-    ser = np.asarray(sym_errs) / answers.shape[1]
+def calculate_ber(decisions,symids,decodation_map):    
     
-    sig_bits = decode(decisions,decodation_map,id_convert)
-    seq_bits = decode(answers,decodation_map,id_convert)
+    sig_bits = decode(decisions,decodation_map)
+    seq_bits = decode(symids,decodation_map)
     
     bit_errs = np.count_nonzero(sig_bits - seq_bits, axis=-1)
     print("bit errors : ",bit_errs)
     ber = np.asarray(bit_errs) / sig_bits.shape[1]
-    return ser,ber
+    return ber
