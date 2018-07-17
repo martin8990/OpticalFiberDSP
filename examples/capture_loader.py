@@ -115,7 +115,7 @@ def load_64Qam_best(N):
 
     sig = sig[:,:2*N]
 
-    return sequence,sig
+    return sequence/7,sig/7
 
 
 

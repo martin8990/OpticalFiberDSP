@@ -88,12 +88,14 @@ def equalize(sig,sequence,mimo_set: set.MimoSettings,u_set: set.UpdateSettings,p
                 row_figs.append(bmp.ConvergencePlot(err_martin[i_mode],name,ntrainingsyms=ntraining_syms,nloops = trainer.nloops - 1))
             row_figs.append(bmp.ConstellationPlot(sig_sym[i_mode],N,name))
             if mimo_set.widely_linear:
-                if taps_martin.shape[0] < 3:
-                    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode,0],N,name))
-                    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode,1],N,name + " Conjugated "))
-                else:
-                    row_figs.append(bmp.TapsPlot(taps_martin[i_mode:i_mode + 1,i_mode,0],N,name))
-                    row_figs.append(bmp.TapsPlot(taps_martin[i_mode:i_mode + 1,i_mode,1],N,name + " Conjugated "))
+                #if taps_martin.shape[0] < 3:
+                #    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode,0],N,name))
+                #    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode,1],N,name + " Conjugated "))
+                #else:
+                #    row_figs.append(bmp.TapsPlot(taps_martin[i_mode:i_mode + 1,i_mode,0],N,name))
+                #      row_figs.append(bmp.TapsPlot(taps_martin[i_mode:i_mode + 1,i_mode,1],N,name + " Conjugated "))
+                row_figs.append(bmp.TapsPlotMerged(taps_martin[i_mode:i_mode + 1,i_mode,0],taps_martin[i_mode:i_mode + 1,i_mode,1],N,name))
+              
             else:
                 row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode,0],N,name))
             figs.append(row_figs)

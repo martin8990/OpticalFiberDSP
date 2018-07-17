@@ -2,7 +2,7 @@ import numpy as np
 from examples.options import *
 
 class PhaseRecoverySettings():
-   type = PhaseRec.INTERNAL
+   type = PhaseRec.NONE
    lbp = 10 # Blocklength for phaserecovery
    num_testangles = 40
 

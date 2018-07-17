@@ -5,13 +5,10 @@ from mimo.mimo import BlockDistributer
 class TapUpdater():
     def save_timedomain_taps(self, H, lb, nmodes, ovsmpl,ovconj):
         """ For vizualisation purposes""" 
-        for i_input in range(nmodes):
-            for i_output in range(nmodes):
-                for i_ovsmpl in range(ovsmpl):
-                    for i_ovconj in range(ovconj):
-                        myrange = range(i_ovsmpl,lb*ovsmpl + i_ovsmpl,ovsmpl)
-                        myTaps =np.fft.ifft(H[i_input,i_output,i_ovsmpl,i_ovconj])[:lb]
-                        self.h_saved[i_input,i_output,i_ovconj,self.i_block,myrange] = myTaps[::-1]
+        for i_ovsmpl in range(ovsmpl):
+            myrange = range(i_ovsmpl,lb*ovsmpl + i_ovsmpl,ovsmpl)
+            myTaps =np.fft.ifft(H[:,:,i_ovsmpl,:])[:,:,:,:lb]
+            self.h_saved[:,:,:,self.i_block,myrange] = myTaps[::-1]
         self.i_block += 1
     
     def __init__(self,mu,block_distr : BlockDistributer):

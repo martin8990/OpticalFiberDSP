@@ -34,3 +34,49 @@ class TapsPlot(MimoFigure):
             self.list_real_taps[i_input].setData(self.taps.real[i_input,i_tap])
             self.list_imag_taps[i_input].setData(self.taps.imag[i_input,i_tap])
 
+
+
+
+
+class TapsPlotMerged(MimoFigure):
+    def __init__(self,taps,taps_conj,nsyms,name):
+        self.taps = taps
+        self.nsyms = nsyms
+        self.taps_conj = taps_conj
+        self.ntaps = taps.shape[1]
+        self.name = name
+
+    def create_figure(self, win):
+        self.list_real_taps = []
+        self.list_imag_taps = [] 
+        self.list_real_taps_conj = []
+        self.list_imag_taps_conj = [] 
+
+        for k in range(self.taps.shape[0]):
+            if self.taps.shape[0] > 1:
+                fig = win.addPlot(title= "Mode : " + str(k)+  " -> " +  self.name )
+            else :
+                fig = win.addPlot(title= self.name )
+            #fig.addLegend()
+            fig.showGrid(x=True, y=True)
+            fig.setLabel('left', "weight", units='-')
+            fig.setLabel('bottom', "tap", units='-')
+            real_taps = fig.plot(self.taps[k,-1].real,pen = ('g'),name='real')
+            imag_taps = fig.plot(self.taps.imag[k,-1],pen = ('r'),name='imag')
+            real_taps_conj = fig.plot(self.taps_conj.real[k,-1],pen = ('b'),name='real_conj')
+            imag_taps_conj = fig.plot(self.taps_conj.imag[k,-1],pen = ('w'),name='imag_conj')
+           
+            #self.list_real_taps.append(real_taps)
+            #self.list_imag_taps.append(imag_taps)
+            #self.list_real_taps_conj.append(real_taps_conj)
+            #self.list_imag_taps_conj.append(imag_taps_conj)
+
+    def update_region(self, r_min, r_max):
+        for i_input in range(len(self.list_imag_taps)):
+            t_tap = r_min / self.nsyms
+            i_tap = min(max([0,int(t_tap * self.ntaps)]),self.taps.shape[1]-1)
+            self.list_real_taps[i_input].setData(self.taps.real[i_input,i_tap])
+            self.list_imag_taps[i_input].setData(self.taps.imag[i_input,i_tap])
+            self.list_real_taps_conj[i_input].setData(self.taps_conj.real[i_input,i_tap])
+            self.list_imag_taps_conj[i_input].setData(self.taps_conj.imag[i_input,i_tap])
+

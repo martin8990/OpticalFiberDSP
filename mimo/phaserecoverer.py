@@ -1,7 +1,6 @@
 import numpy as np
 from mimo.mimo import BlockDistributer,Trainer
 
-# TODO : Class is to long, should be refactored
 class BlindPhaseSearcher():
     def __init__(self,block_distr : BlockDistributer,trainer : Trainer,num_testangles,search_area = np.pi/2,use_training = False):
     
