@@ -6,10 +6,11 @@ import matplotlib.pyplot as plt
 import pyqt_mimo.mimoplot as bmp
 import utility.evaluation as eval
 import examples.settings as set
+from examples.options import *
 
 def equalize(sig,sequence,mimo_set: set.MimoSettings,u_set: set.UpdateSettings,pr_set: set.PhaseRecoverySettings ,showplots=True):
     lbp = pr_set.lbp
-    if pr_set.type == set.PhaseRec.NONE:
+    if pr_set.type == PhaseRec.NONE:
         lbp = 0
     
     ovsmpl = mimo_set.ovsmpl
@@ -37,13 +38,13 @@ def equalize(sig,sequence,mimo_set: set.MimoSettings,u_set: set.UpdateSettings,p
     # Setup error calculators per section
     errorcalcs = []
     for ecalc_type in u_set.error_calculators:
-        if ecalc_type == set.ECalc.LMS:
+        if ecalc_type == ECalc.LMS:
            ecalc = mimo.TrainedLMS(block_distr)
-        elif ecalc_type == set.ECalc.SBD:
+        elif ecalc_type == ECalc.SBD:
            ecalc = mimo.TrainedSBD(block_distr)
-        elif ecalc_type == set.ECalc.MRD:
+        elif ecalc_type == ECalc.MRD:
             ecalc = mimo.TrainedMRD(block_distr)
-        elif ecalc_type == set.ECalc.CMA:
+        elif ecalc_type == ECalc.CMA:
             ecalc = mimo.CMAErrorCalculator(block_distr)
         errorcalcs.append(ecalc)
     trainer.set_errorcalcs(errorcalcs)
@@ -51,12 +52,12 @@ def equalize(sig,sequence,mimo_set: set.MimoSettings,u_set: set.UpdateSettings,p
 
     # Equalization
      
-    if pr_set.type == set.PhaseRec.INTERNAL:
+    if pr_set.type == PhaseRec.INTERNAL:
         phase_recoverer = mimo.BlindPhaseSearcher(block_distr,trainer,pr_set.num_testangles)
         sig_eq = mimo.equalize_blockwize(block_distr,tap_updater,phase_recoverer,mimo_set.widely_linear)
     else:
         sig_eq = mimo.equalize_blockwize(block_distr,tap_updater,widely_linear = mimo_set.widely_linear)
-        if pr_set.type == set.PhaseRec.EXTERNAL:
+        if pr_set.type == PhaseRec.EXTERNAL:
            sig_eq[:,ntraining_syms:] = phaserec.blind_phase_search(sig_eq[:,ntraining_syms:],pr_set.num_testangles,trainer.constellation,lbp)
                 
     trainer.calculate_ser_ber(sig_eq)
@@ -67,7 +68,7 @@ def equalize(sig,sequence,mimo_set: set.MimoSettings,u_set: set.UpdateSettings,p
         err_martin = trainer.retrieve_error()
         sig_sym = trainer.sort_sig_per_sym(sig_eq)
         
-        if pr_set.type == set.PhaseRec.INTERNAL:
+        if pr_set.type == PhaseRec.INTERNAL:
             phase = np.asarray(phase_recoverer.phase_collection)
             slips_up = np.asarray(phase_recoverer.slips_up)
             slips_down = np.asarray(phase_recoverer.slips_down)

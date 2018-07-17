@@ -71,10 +71,7 @@ class BlockDistributer():
         self.trainer.update_block(i_block,range_block)
         
         double_block_fd = np.zeros_like(self.double_block)
-        for i_input in range(double_block_fd.shape[0]):
-            for i_ovsmpl in range(double_block_fd.shape[1]):
-                for i_ovconj in range(double_block_fd.shape[2]):
-                    double_block_fd[i_input,i_ovsmpl,i_ovconj] = np.fft.fft(self.double_block[i_input,i_ovsmpl,i_ovconj])
+        double_block_fd = np.fft.fft(self.double_block)
         
         self.double_block_fd = double_block_fd
         self.range_block = range_block
@@ -91,10 +88,6 @@ class BlockDistributer():
         if i_block > 1: # First block is out of range
             inputrange = self._get_double_block_range(i_block,lb) + shift 
             double_block_fd = np.zeros_like(self.double_block)
-            for i_input in range(double_block_fd.shape[0]):
-                for i_ovsmpl in range(double_block_fd.shape[1]):
-                    for i_ovconj in range(ovconj):
-                        block_dim = np.fft.fft(self.sig_separated[i_input,i_ovsmpl,i_ovconj,inputrange])
-                        double_block_fd[i_input,i_ovsmpl,i_ovconj] = block_dim
+            double_block_fd = np.fft.fft(self.sig_separated[:,:,:,inputrange])
             self.double_block_fd = double_block_fd
            

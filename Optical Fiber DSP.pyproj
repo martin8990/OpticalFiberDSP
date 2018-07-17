@@ -21,16 +21,12 @@
   <ItemGroup>
     <Content Include="mimo\Legacy\21LBDyn.png" />
     <Content Include="mimo\Legacy\401LBDyn.png" />
-    <Content Include="Results\Heatmap.png" />
-    <Content Include="Results\LB_Comparison\Lower.png" />
-    <Content Include="Results\LB_Comparison\Settings.txt" />
-    <Content Include="Results\Long.png" />
-    <Content Include="Results\NanoSecondPMD\NanosecondPMD.png" />
-    <Content Include="Results\NanoSecondPMD\Settings.txt" />
-    <Content Include="Results\Settings.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="examples\options.py" />
+    <Compile Include="examples\settings_QAM.py" />
     <Compile Include="examples\settings.py" />
+    <Compile Include="mpl_plots\__init__.py" />
     <Compile Include="utility\cmd.py">
       <SubType>Code</SubType>
     </Compile>
@@ -86,6 +82,7 @@
     <Compile Include="utility\__init__.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="mpl_plots\" />
     <Folder Include="pyqt_mimo\pyqt_mimo_app\" />
     <Folder Include="utility\" />
     <Folder Include="mimo" />
@@ -93,9 +90,6 @@
     <Folder Include="mimo\Tests" />
     <Folder Include="pyqt_mimo\" />
     <Folder Include="examples\Legacy\pyqt_mimo_app\" />
-    <Folder Include="Results" />
-    <Folder Include="Results\LB_Comparison" />
-    <Folder Include="Results\NanoSecondPMD" />
     <Folder Include="examples\" />
     <Folder Include="examples\Legacy\FourierTransform\" />
     <Folder Include="examples\Legacy\" />

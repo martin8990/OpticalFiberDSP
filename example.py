@@ -9,7 +9,11 @@ update_set = set.UpdateSettings()
 phaserec_set = set.PhaseRecoverySettings()
 
 
-nsyms = 15 * 10**4
+nsyms = 50 * 10**4
 sequence,sig = load.load_harder_capture(nsyms)
-eq.equalize(sig,sequence,mimo_set,update_set,phaserec_set,showplots=True)
 
+import time
+start = time.time()
+eq.equalize(sig,sequence,mimo_set,update_set,phaserec_set,showplots=False)
+stop = time.time()
+print(stop - start)

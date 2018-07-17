@@ -52,7 +52,7 @@ def load_3mode_ez_capture(N):
 def load_3mode_hard_capture(N):
     capture = sio.loadmat(capturedir+'3M_9.50E-3_701taps.mat', squeeze_me=True)
     sequence = capture['Sequence'][()].astype(np.complex128)
-    sequence = np.roll(sequence,22884 + 1998,axis = 1)
+    sequence = np.roll(sequence,24884,axis = 1)
     
     while N > sequence.shape[1]:
         sequence = np.append(sequence,sequence,axis=1)
@@ -67,7 +67,7 @@ def load_3mode_hard_capture(N):
 def load_3mode_hard_capture_corr():
     capture = sio.loadmat(capturedir+'3M_9.50E-3_701taps.mat', squeeze_me=True)
     sequence = capture['Sequence'][()].astype(np.complex128)
-    sequence = np.roll(sequence,22884 + 1998,axis = 1)
+    sequence = np.roll(sequence,24884,axis = 1)
     
 
     sig = capture['Input'][()].astype(np.complex128)
@@ -94,5 +94,28 @@ def load_6mode_easy_capture(N):
 
     sig = capture['Input'][()].astype(np.complex128)
     sig = sig*8
-    sig = sig[:,:N]
+    sig = sig[:,:2*N]
     return sequence,sig
+
+def load_64Qam_best_corr():
+    sig = np.load(capturedir + '64QAM_capture11.npz').items()[0][1]
+    sequence = np.load(capturedir + 'original_data_64QAM.npz').items()[0][1]
+    sequence = np.roll(sequence,-8677 - 92,axis = 1)
+    
+    return sequence,sig
+
+def load_64Qam_best(N):
+    sig = np.load(capturedir + '64QAM_capture11.npz').items()[0][1]
+    sequence = np.load(capturedir + 'original_data_64QAM.npz').items()[0][1]
+    sequence = np.roll(sequence,-8677 - 92,axis = 1)
+    
+    while N > sequence.shape[1]:
+        sequence = np.append(sequence,sequence,axis=1)
+        sequence = sequence[:,:N]
+
+    sig = sig[:,:2*N]
+
+    return sequence,sig
+
+
+
