@@ -29,31 +29,28 @@ class BlindPhaseSearcher():
         self.i_block = 0
                    
     def __denoise(self, nearest_dist_per_angle):
-        csum = np.cumsum(nearest_dist_per_angle, axis=0)
-        nearest_dist_per_angle_denoised = csum[2*self.lbp:]-csum[:-2*self.lbp] 
+        csum = np.cumsum(nearest_dist_per_angle, axis=1)
+        nearest_dist_per_angle_denoised = csum[:,2*self.lbp:]-csum[:,:-2*self.lbp] 
         return nearest_dist_per_angle_denoised
         
     def __get_angle_id_with_nearest_distance(self,nearest_dist_per_angle_denoised):
-        return nearest_dist_per_angle_denoised.argmin(1)
+        return nearest_dist_per_angle_denoised.argmin(2)
 
-    def __find_best_decisions(self,i_mode,block_distr : BlockDistributer,block,trainer : Trainer):
+    def __find_best_decisions(self,block_distr : BlockDistributer,block,trainer : Trainer):
         angles = self.angles
         constellation = trainer.constellation
                     
-        sig_rotated = block[:,np.newaxis]*np.exp(1j*angles)
-        
-        distances = abs(sig_rotated[:, :, np.newaxis]-constellation)**2
-        nearest_dist_per_angle = distances.min(axis=2)
+        sig_rotated = block[:,:,np.newaxis]*np.exp(1j*angles)
+        distances = abs(sig_rotated[:,:, :, np.newaxis]-constellation)**2
+        nearest_dist_per_angle = distances.min(axis=3)
         nearest_dist_per_angle_denoised = self.__denoise(nearest_dist_per_angle)
-        
         decisions = self.__get_angle_id_with_nearest_distance(nearest_dist_per_angle_denoised)
         return decisions
 
     def __select_angles(self,angles, decisions):
-        nsamps = decisions.shape[0]
-        chosen_angles = np.zeros(nsamps)
-        for i in range(nsamps):
-            chosen_angles[i] = angles[decisions[i]]
+        nsamps = decisions.shape[1]
+        chosen_angles = np.zeros_like(decisions)
+        chosen_angles = angles[decisions]
         return chosen_angles
 
     def remove_cycle_slips(self, i_mode, lb, phases_mode):
@@ -83,19 +80,20 @@ class BlindPhaseSearcher():
         block = block_distr.block_compensated
         lb = block_distr.lb
         lbp = trainer.lbp
+        block_appended = np.append(self.buffer,block,axis = 1)
+        self.buffer = block[:,-self.lbp*2:]
+        block = block_appended[:,self.lbp:-self.lbp]
+           
+        if trainer.stop_phaserec and self.use_training == False:
+            phases = np.zeros((block.shape[0],lb))
+        else:
+            decisions =  self.__find_best_decisions(block_distr,block_appended,trainer)
+            phases_modes = self.__select_angles(self.angles,decisions)
 
-        for i_mode in range(block.shape[0]):
-            block_appended = np.append(self.buffer[i_mode],block[i_mode])
-            self.buffer[i_mode] = block[i_mode,-self.lbp*2:]
-            block[i_mode] = block_appended[self.lbp:-self.lbp]
-            if trainer.stop_phaserec and self.use_training == False:
-                phases_mode = np.zeros(lb)
-            else:
-                 decisions =  self.__find_best_decisions(i_mode,block_distr,block_appended,trainer)
-                 phases_mode = self.__select_angles(self.angles,decisions)
-            phases_mode = self.remove_cycle_slips(i_mode, lb, phases_mode)
-            phases.append(phases_mode)
-            self.phase_collection[i_mode].extend(phases_mode)
+            for i_mode in range(block.shape[0]):
+                phases_mode = self.remove_cycle_slips(i_mode, lb, phases_modes[i_mode])
+                phases.append(phases_mode)
+                self.phase_collection[i_mode].extend(phases_mode)
                    
         phases = np.asarray(phases)
         self.i_block+=1

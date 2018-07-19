@@ -30,6 +30,6 @@ mimo_set = MimoSettings()
 update_set = UpdateSettings()
 phaserec_set = PhaseRecoverySettings()
 
-nsyms = 9 * 10**4
+nsyms = 7 * 10**4
 sequence,sig = load.load_harder_capture(nsyms)
 eq.equalize(sig,sequence,mimo_set,update_set,phaserec_set,showplots=True)
