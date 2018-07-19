@@ -9,7 +9,7 @@ update_settings = set.UpdateSettings()
 phase_recovery_settings = set.PhaseRecoverySettings()
 
 nsyms = 7 * 10**4
-sequence,sig = load.load_64Qam_best(nsyms)
+sequence,sig = load.load_3mode_ez_capture(nsyms)
 
 
 

@@ -31,7 +31,6 @@ class BlindPhaseSearcher():
     def __denoise(self, nearest_dist_per_angle):
         csum = np.cumsum(nearest_dist_per_angle, axis=0)
         nearest_dist_per_angle_denoised = csum[2*self.lbp:]-csum[:-2*self.lbp] 
-     
         return nearest_dist_per_angle_denoised
         
     def __get_angle_id_with_nearest_distance(self,nearest_dist_per_angle_denoised):

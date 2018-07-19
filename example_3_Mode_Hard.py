@@ -5,9 +5,9 @@ import examples.equalizer as eq
 from examples.options import *
 
 class PhaseRecoverySettings():
-   type = PhaseRec.NONE
-   lbp = 10 # Blocklength for phaserecovery
-   num_testangles = 40
+   type = PhaseRec.INTERNAL
+   lbp = 40 # Blocklength for phaserecovery
+   num_testangles = 30
    search_area = np.pi/2
    
 class UpdateSettings():
@@ -21,7 +21,6 @@ class UpdateSettings():
 class MimoSettings():
     ovsmpl = 2
     widely_linear = True
-    #lb = 150 # block length
     lb = 250
     name = "3 Mode Hard" 
 

@@ -13,8 +13,8 @@ class UpdateSettings():
     mu = 20e-5 # Stepsize
     error_calculators = [ECalc.LMS,ECalc.LMS]
 
-    num_trainingsyms = 30000 # also number of training syms in a loop
-    phaserec_start = 28000 # Symbol where phaserecovery starts
+    num_trainingsyms = 35000 # also number of training syms in a loop
+    phaserec_start = 2000 # Symbol where phaserecovery starts
     update_type = MimoUpdaterType.FREQUENCYDOMAIN
 
 class MimoSettings():

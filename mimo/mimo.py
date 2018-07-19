@@ -18,28 +18,8 @@ from mimo.tap_updater import *
 
 from mimo.compensator import *
 from mimo.phaserecoverer import BlindPhaseSearcher
-
-     
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
-    """
-    Call in a loop to create terminal progress bar
-    @params:
-        iteration   - Required  : current iteration (Int)
-        total       - Required  : total iterations (Int)
-        prefix      - Optional  : prefix string (Str)
-        suffix      - Optional  : suffix string (Str)
-        decimals    - Optional  : positive number of decimals in percent complete (Int)
-        length      - Optional  : character length of bar (Int)
-        fill        - Optional  : bar fill character (Str)
-    """
-    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
-    filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = '\r')
-    # Print New Line on Complete
-    if iteration == total: 
-        print()
-
+from utility.cmd import printProgressBar
+import time
 # 
 # Sample Usage
 # 
@@ -62,7 +42,34 @@ def equalize_blockwize(block_distr : BlockDistributer,tap_updater : TapUpdater,p
         printProgressBar(i_block,block_distr.nblocks)
     return block_distr.sig_compensated
 
+def equalize_blockwize_timed(block_distr : BlockDistributer,tap_updater : TapUpdater,phaserecoverer = None,widely_linear = False):
+    trainer = block_distr.trainer
+    nblocks = block_distr.nblocks
+    times = np.zeros(5)
+    for i_block in range(1,nblocks):
+        start = time.time()
+        block_distr.reselect_blocks(i_block)
+        times[0]+=time.time()-start
+       
+        start = time.time()
+        compensate(block_distr,tap_updater.H)
+        times[1]+=time.time()-start
+       
+        start = time.time()
+        if phaserecoverer!=None:
+            phaserecoverer.recover_phase(block_distr,trainer)
+        times[2]+=time.time()-start
+       
+        start = time.time()
+        error_calculator = trainer.get_error_calculator(block_distr)
+        error_calculator.start_error_calculation(block_distr,trainer)
+        times[3]+=time.time()-start
 
+        start = time.time()
+        tap_updater.update_taps(block_distr)
+        times[4]+=time.time()-start
+        print(times)
+    return block_distr.sig_compensated
     
 
     #
