@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{58a347be-2db0-4756-b8e0-a8f1353af3d6}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>example_64_QAM.py</StartupFile>
+    <StartupFile>example_QSM_Hard.py</StartupFile>
     <SearchPath>pyqt_mimo</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
