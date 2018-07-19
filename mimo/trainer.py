@@ -94,7 +94,6 @@ class Trainer():
         symids = np.zeros(seq.shape,dtype = int)
         for i_mode in range(seq.shape[0]): # cannot be vectorized further
             constellation,symids[i_mode] = np.unique(seq[i_mode],return_inverse=True) 
-        print(constellation)
         self.constellation = constellation
         self.symids = symids
 
@@ -107,11 +106,13 @@ class Trainer():
         start = self.ntraining_syms * self.nloops
         stop = sig.shape[1] - 10000
         constellation = self.constellation
+        decisions = eval.make_decisions(sig,constellation)
+        self.decisions = decisions
         if stop-start < 1000:
             print("Too short for SER")
         else:
             symids = self.symids[:,start:stop]
-            decisions = eval.make_decisions(sig[:,start:stop],constellation)
+            decisions = decisions[:,start:stop]            
             ser = eval.calculate_ser(decisions,symids)
             print("Calculation Between " ,start," and ", stop)
             print("ser = ",eval.format_list_of_numbers(ser))

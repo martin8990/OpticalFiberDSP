@@ -7,8 +7,6 @@ import utility.evaluation as eval
 import pickle
 
 from qampy.core.filter import *
-import Testing.Equalizer as eq
-import Testing.CaptureLoader as load
 
 def load_8QAM(N):
 

@@ -5,6 +5,7 @@ class PhaseRecoverySettings():
    type = PhaseRec.NONE
    lbp = 10 # Blocklength for phaserecovery
    num_testangles = 40
+   search_area = np.pi/2
 
 
 class UpdateSettings():

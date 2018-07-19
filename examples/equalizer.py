@@ -53,7 +53,7 @@ def equalize(sig,sequence,mimo_set: set.MimoSettings,u_set: set.UpdateSettings,p
     # Equalization
      
     if pr_set.type == PhaseRec.INTERNAL:
-        phase_recoverer = mimo.BlindPhaseSearcher(block_distr,trainer,pr_set.num_testangles)
+        phase_recoverer = mimo.BlindPhaseSearcher(block_distr,trainer,pr_set.num_testangles,search_area = pr_set.search_area)
         sig_eq = mimo.equalize_blockwize(block_distr,tap_updater,phase_recoverer,mimo_set.widely_linear)
     else:
         sig_eq = mimo.equalize_blockwize(block_distr,tap_updater,widely_linear = mimo_set.widely_linear)
@@ -87,14 +87,10 @@ def equalize(sig,sequence,mimo_set: set.MimoSettings,u_set: set.UpdateSettings,p
             else :
                 row_figs.append(bmp.ConvergencePlot(err_martin[i_mode],name,ntrainingsyms=ntraining_syms,nloops = trainer.nloops - 1))
             row_figs.append(bmp.ConstellationPlot(sig_sym[i_mode],N,name))
+            row_figs.append(bmp.ErrorSymbolPlot(sig_eq[i_mode],i_mode,trainer,N,name))
+  
             if mimo_set.widely_linear:
-                #if taps_martin.shape[0] < 3:
-                #    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode,0],N,name))
-                #    row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode,1],N,name + " Conjugated "))
-                #else:
-                #    row_figs.append(bmp.TapsPlot(taps_martin[i_mode:i_mode + 1,i_mode,0],N,name))
-                #      row_figs.append(bmp.TapsPlot(taps_martin[i_mode:i_mode + 1,i_mode,1],N,name + " Conjugated "))
-                row_figs.append(bmp.TapsPlotMerged(taps_martin[i_mode:i_mode + 1,i_mode,0],taps_martin[i_mode:i_mode + 1,i_mode,1],N,name))
+                row_figs.append(bmp.TapsPlotMerged(taps_martin[:,i_mode,:],N,i_mode,name))
               
             else:
                 row_figs.append(bmp.TapsPlot(taps_martin[:,i_mode,0],N,name))

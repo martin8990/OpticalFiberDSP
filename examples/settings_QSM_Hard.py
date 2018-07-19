@@ -1,25 +1,23 @@
 import numpy as np
-from enum import Enum
 from examples.options import *
 
-
 class PhaseRecoverySettings():
-   type = PhaseRec.INTERNAL
+   type = PhaseRec.NONE
    lbp = 10 # Blocklength for phaserecovery
-   num_testangles = 20
+   num_testangles = 40
    search_area = np.pi/2
 
 class UpdateSettings():
-    mu = 20e-5 # Stepsize
+    mu = 6e-4 
     error_calculators = [ECalc.LMS,ECalc.LMS]
 
-    num_trainingsyms = 30000 # also number of training syms in a loop
-    phaserec_start = 28000 # Symbol where phaserecovery starts
+    num_trainingsyms = 50000 # also number of training syms in a loop
+    phaserec_start = 40000 # Symbol where phaserecovery starts
     update_type = MimoUpdaterType.FREQUENCYDOMAIN
 
 class MimoSettings():
     ovsmpl = 2
     widely_linear = True
-    lb = 128 # block length
-    name = "64 Qam Settings" 
+    lb = 32 # block length
+    name = "Single mode Hard" 
 

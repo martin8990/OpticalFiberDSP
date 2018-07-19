@@ -4,6 +4,7 @@ import pyqtgraph as pg
 from pyqt_mimo.mimofigure import *
 from pyqt_mimo.convergenceplot import *
 from pyqt_mimo.constellationplot import *
+from pyqt_mimo.errorsymbolplot import *
 from pyqt_mimo.tapsplot import *   
 from PyQt5.QtWidgets import *
 
@@ -16,8 +17,7 @@ class InteractiveMimoRow :
         self.lr = pg.LinearRegionItem([lowerbound,upperbound])
         self.lr.setZValue(-10)
         mimofigures[0].fig.addItem(self.lr)
-        
-        
+               
         self.mimofigures = mimofigures
         def updateRegion():
             self.lr.setRegion(constellation_figure.getViewBox().viewRange()[0])
@@ -32,11 +32,13 @@ class InteractiveMimoRow :
 
     
 
+
 def plot_interactive_mimo(mimo_figures : list,lowerbound,upperbound,name):
     app = QtGui.QApplication([])
     wins = []
     for ifig,figs in enumerate(mimo_figures):
         wins.append(pg.GraphicsWindow(title="Mimo Plotter"))
+       
         wins[ifig].resize(600 + len(figs) * 300,300 * len(figs))
         wins[ifig].setWindowTitle(name)
 
